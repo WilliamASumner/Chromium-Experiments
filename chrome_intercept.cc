@@ -24,266 +24,402 @@ double moving_avg_len[30] = {0.0};
 #define FIRST_PAINT 2
 #define DOM_INTER   3
 
-namespace base {
-	class TimeTicks {
-	public: 
-		int64_t us_;
-	};
-	class TimeDelta {
-		int64_t delta_;
-	};
-}
 
+/* WTF::String - used a lot in blink */
+namespace WTF {
+    class String;
+};
+
+/* v8 stuff */
+/* Some helper definition classes, (very) crude recreation*/
+namespace v8 {
+
+    template <class T> class Local {
+        private:
+            T* val_;
+    };
+
+    class Value {
+        public:
+            Value(void* isolate, Local<v8::Value> obj);
+            ~Value();
+        private:
+            uint16_t* str_;
+            int length_;
+    };
+
+    template <class T> class MaybeLocal {
+        private:
+            T* val_;
+    };
+
+    class Function { // indirectly inherits from Value
+        private:
+            uint16_t* str_;
+            int length_;
+    };
+
+    class Isolate;
+}
 
 
 namespace blink {
-	class DocumentParser {
-		virtual void PrepareToStopParsing();
-	};
-
-	typedef void (*doc_parsing_ptr)(DocumentParser*); // requires the "this" at least
-
-	void DocumentParser::PrepareToStopParsing() {
-		//printf("Preparing to Stop; pid = %ld\n",syscall(__NR_getpid));
-		doc_parsing_ptr real_fcn = (doc_parsing_ptr)dlsym(RTLD_NEXT,"_ZN5blink14DocumentParser20PrepareToStopParsingEv"); // use mangled name
-		if (real_fcn == NULL) {
-			//printf("Error finding function 'PrepareToStopParsing'\n");
-			exit(1);
-		}
-		// Run all big cores for the duration of this function
-		//_set_affinity_big();
-		real_fcn(this);
-		//_set_affinity_all();
-	}
 
 
+    /* HTML Stage */
 
-	class HTMLDocumentParser { // leaving this out for now, focusing on Web Performance API
-		void ResumeParsingAfterYield();
-	};
+    class HTMLDocumentParser { // leaving this out for now, focusing on Web Performance API
+        void PumpPendingSpeculations();
+        void ResumeParsingAfterYield();
+    };
 
-	typedef void (*resume_parsing_ptr)(HTMLDocumentParser*); // requires the "this" at least
+    typedef void (*pump_pend_ptr)(HTMLDocumentParser*); // requires the "this" at least
 
-	void HTMLDocumentParser::ResumeParsingAfterYield() {
-		//printf("Resuming Parsing; pid = %ld\n",syscall(__NR_getpid));
-		resume_parsing_ptr real_fcn = (resume_parsing_ptr)dlsym(RTLD_NEXT,"_ZN5blink18HTMLDocumentParser23ResumeParsingAfterYieldEv"); // use mangled name
-		if (real_fcn == NULL) {
-			printf("Error finding function 'ResumeParsingAfterYield'\n");
-			exit(1);
-		}
-		// Run all big cores for the duration of this function
-		//_set_affinity_big();
-		real_fcn(this);
-		//_set_affinity_all();
-	}
+    void HTMLDocumentParser::PumpPendingSpeculations() {
+        //printf("\n\n\n");
+        //printf("PumpPendingSpeculations; tid = %lu\n",
+                //syscall(SYS_gettid));
+        //printf("\n\n\n");
 
-	/*class PaintTiming {
-		void MarkFirstPaint();
-	};
+        pump_pend_ptr real_fcn =
+            (pump_pend_ptr)dlsym(RTLD_NEXT,
+                    "_ZN5blink18HTMLDocumentParser23PumpPendingSpeculationsEv"); // use mangled name
+        if (real_fcn == NULL) {
+            printf("Error finding function 'PumpPendingSpeculations'\n");
+            exit(1);
+        }
 
-	void PaintTiming::MarkFirstPaint() {
-		printf("First paint\n");
-		resume_parsing_ptr real_fcn = (resume_parsing_ptr)dlsym(RTLD_NEXT,"_ZN5blink11PaintTiming14MarkFirstPaintEv"); // use mangled name
-		if (real_fcn == NULL) {
-			printf("Error finding function 'MarkFirstPaint'\n");
-			exit(1);
-		}
-		// Run all big cores for the duration of this function
-		//_set_affinity_big();
-		real_fcn(this);
-		//_set_affinity_all();
-	}*/
+        real_fcn(this);
+    }
 
-	class DocumentLoadTiming {
-	public:
-		void SetNavigationStart(base::TimeTicks);
-		void MarkNavigationStart();
-	private:
-		base::TimeTicks reference_monotonic_time_;
-		base::TimeDelta reference_wall_time_;
-		base::TimeTicks input_start_;
-		base::TimeTicks navigation_start_;
-		base::TimeTicks unload_event_start_;
-		base::TimeTicks unload_event_end_;
-		base::TimeTicks redirect_start_;
-		base::TimeTicks redirect_end_;
-		uint16_t redirect_count_;
-	};
 
-	typedef void (*set_nav_ptr)(DocumentLoadTiming*,base::TimeTicks); // requires the "this" at least
-	void DocumentLoadTiming::SetNavigationStart(base::TimeTicks t) {
-			printf("-----------Set Nav Start\n");
-			printf("-----------old t = %ld\n",this->navigation_start_.us_);
-			printf("-----------TimeTicks t = %ld\n",t.us_);
-			printf("----------- redirect count %hu\n",this->redirect_count_);
-			set_nav_ptr real_fcn = (set_nav_ptr)dlsym(RTLD_NEXT,"_ZN5blink18DocumentLoadTiming18SetNavigationStartEN4base9TimeTicksE"); // use mangled name
-			if (real_fcn == NULL) {
-					printf("Error finding function 'SetNavStart'\n");
-					exit(1);
-			}
-			// Run all big cores for the duration of this function
-			//_set_affinity_big();
-			real_fcn(this,t);
-			//_set_affinity_all();
-	}
+    typedef void (*resume_parse_ptr)(HTMLDocumentParser*); // requires the "this" at least
 
-	typedef void (*mark_nav_ptr)(DocumentLoadTiming*); // requires the "this" at least
-	void DocumentLoadTiming::MarkNavigationStart() {
-			printf("=====*======Mark Nav Start\n");
-			printf("============this->navigation_start_ = %ld\n",this->navigation_start_.us_);
-			mark_nav_ptr real_fcn = (mark_nav_ptr)dlsym(RTLD_NEXT,"_ZN5blink18DocumentLoadTiming19MarkNavigationStartEv"); // use mangled name
-			if (real_fcn == NULL) {
-					printf("Error finding function 'MarkNavStart'\n");
-					exit(1);
-			}
-			// Run all big cores for the duration of this function
-			//_set_affinity_big();
-			real_fcn(this);
-			//_set_affinity_all();
-	}
+    void HTMLDocumentParser::ResumeParsingAfterYield() {
+        //printf("Resuming Parsing; tid = %lu\n",syscall(SYS_gettid));
+        resume_parse_ptr real_fcn =
+            (resume_parse_ptr)dlsym(RTLD_NEXT,"_ZN5blink18HTMLDocumentParser23ResumeParsingAfterYieldEv"); // use mangled name
+        if (real_fcn == NULL) {
+            printf("Error finding function 'ResumeParsingAfterYield'\n");
+            exit(1);
+        }
+        // Run all big cores for the duration of this function
+        //_set_affinity_big();
+        real_fcn(this);
+        //_set_affinity_all();
+    }
+
+    /* Requisite Class Definitions */
+
+    enum class ParseSheetResult; // css_parser.h
+    class CSSParserContext;
+    class StyleSheetContents;
+    enum class CSSDeferPropertyParsing; // css_parser_mode.h
+        class CSSParser {
+        static ParseSheetResult ParseSheet(
+                const CSSParserContext*,
+                StyleSheetContents*,
+                const WTF::String&,
+                CSSDeferPropertyParsing defer_property_parsing,
+                bool);
+    };
+
+    /* Function Pointer Definitions */
+
+    typedef ParseSheetResult (*parse_sheet_ptr)(
+            const CSSParserContext*,
+            StyleSheetContents*, 
+            const WTF::String&,
+            CSSDeferPropertyParsing,
+            bool); // static func no this
+
+    /* Function re-definition */
+
+    ParseSheetResult CSSParser::ParseSheet(
+            const CSSParserContext* context,
+            StyleSheetContents* style_sheet,
+            const WTF::String& text,
+            CSSDeferPropertyParsing defer_property_parsing,
+            bool allow_import_rules) {
+
+        //printf("\n\n\n");
+        //printf("ParseSheet; tid = %lu\n",syscall(SYS_gettid));
+        //printf("\n\n\n");
+
+        parse_sheet_ptr real_fcn =
+            (parse_sheet_ptr)dlsym(RTLD_NEXT,
+                    "_ZN5blink9CSSParser10ParseSheetEPKNS_16CSSParserContextEPNS_18StyleSheetContentsERKN3WTF6StringENS_23CSSDeferPropertyParsingEb"); // use mangled name
+        if (real_fcn == NULL) {
+            printf("Error finding function 'ParseSheet'\n");
+            exit(1);
+        }
+
+        // enum class, should have no self param
+        ParseSheetResult result = real_fcn(context,style_sheet,text,defer_property_parsing,allow_import_rules);
+
+        return result;
+    }
+
+
+    class Document {
+        void UpdateStyleAndLayoutTree();
+    };
+
+    typedef void (*update_style_ptr)(Document*); // static func no this
+
+
+    void Document::UpdateStyleAndLayoutTree() {
+        //printf("\n\n\n");
+        //printf("UpdateStyle; tid = %lu\n",syscall(SYS_gettid));
+        //printf("\n\n\n");
+
+        update_style_ptr real_fcn =
+            (update_style_ptr)dlsym(RTLD_NEXT,
+                    "_ZN5blink8Document24UpdateStyleAndLayoutTreeEv"); // use mangled name
+        if (real_fcn == NULL) {
+            printf("Error finding function 'UpdateStyleAndLayoutTree'\n");
+            exit(1);
+        }
+
+        real_fcn(this);
+    }
+
+
+    /* Paint/Layout Stage */
+    class DocumentLifecycle {
+        public:
+            enum LifecycleState {
+                kUninitialized,
+                kInactive,
+
+                // When the document is active, it traverses these states.
+
+                kVisualUpdatePending,
+
+                kInStyleRecalc,
+                kStyleClean,
+
+                kInLayoutSubtreeChange,
+                kLayoutSubtreeChangeClean,
+
+                kInPreLayout,
+                kInPerformLayout,
+                kAfterPerformLayout,
+                kLayoutClean,
+
+                kInCompositingUpdate,
+                kCompositingInputsClean,
+                kCompositingClean,
+
+                // In InPrePaint step, any data needed by painting are prepared.
+                // Paint property trees are built and paint invalidations are issued.
+                kInPrePaint,
+                kPrePaintClean,
+
+                // In InPaint step, paint artifacts are generated and raster invalidations
+                // are issued.
+                // In CAP, composited layers are generated/updated.
+                kInPaint,
+                kPaintClean,
+
+                // Once the document starts shutting down, we cannot return
+                // to the style/layout/compositing states.
+                kStopping,
+                kStopped,
+            };
+    };
+
+    class LocalFrameView {
+        void UpdateLifecyclePhasesInternal(
+                DocumentLifecycle::LifecycleState target_state);
+        void PerformLayout(bool);
+    };
+
+    /* Paint Stage */
+
+    typedef void (*update_lifecycle_ptr)(
+            LocalFrameView*,
+            DocumentLifecycle::LifecycleState);
+
+    void LocalFrameView::UpdateLifecyclePhasesInternal(
+            DocumentLifecycle::LifecycleState target_state) {
+        //printf("\n\n\n");
+        //printf("UpdateLifecycle;tid= %lu\n",syscall(SYS_gettid));
+        //printf("\n\n\n");
+
+        update_lifecycle_ptr real_fcn =
+            (update_lifecycle_ptr)dlsym(RTLD_NEXT,
+                    "_ZN5blink14LocalFrameView29UpdateLifecyclePhasesInternalENS_17DocumentLifecycle14LifecycleStateE"); // use mangled name
+        if (real_fcn == NULL) {
+            printf("Error finding function 'UpdateLifecyclePhasesInternal'\n");
+            exit(1);
+        }
+
+        real_fcn(this,target_state);
+    }
+
+    /* Layout Stage */
+
+    typedef void (*perform_layout_ptr)(
+            LocalFrameView*,
+            bool);
+    void LocalFrameView::PerformLayout(bool in_subtree_layout) {
+        printf("\n\n\n");
+        printf("PerformLayout;tid= %lu\n",syscall(SYS_gettid));
+        printf("\n\n\n");
+
+        perform_layout_ptr real_fcn =
+            (perform_layout_ptr)dlsym(RTLD_NEXT,
+                    "_ZN5blink14LocalFrameView13PerformLayoutEb"); // use mangled name
+        if (real_fcn == NULL) {
+            printf("Error finding function 'PerformLayout'\n");
+            exit(1);
+        }
+
+        real_fcn(this,in_subtree_layout);
+
+    }
+
+
+    /* JS Stage */
+
+    class KURL;
+    class ScriptSourceCode;
+    enum class SanitizeScriptErrors;
+    class ScriptFetchOptions;
+
+    class ScriptController {
+        void ExecuteScriptInMainWorld(
+                const ScriptSourceCode&,
+                const KURL& base_url,
+                SanitizeScriptErrors,
+                const ScriptFetchOptions&);
+        void* ExecuteScriptInIsolatedWorld(
+                int32_t world_id,
+                const ScriptSourceCode& source,
+                const KURL& base_url,
+                SanitizeScriptErrors sanitize_script_errors);
+
+    };
+
+    typedef void (*execute_script_ptr)(
+            ScriptController*, 
+            const ScriptSourceCode&,
+            const KURL& base_url,
+            SanitizeScriptErrors,
+            const ScriptFetchOptions&);
+
+    void ScriptController::ExecuteScriptInMainWorld(
+            const ScriptSourceCode& source_code,
+            const KURL& base_url,
+            SanitizeScriptErrors sanitize_script_errors,
+            const ScriptFetchOptions& fetch_options){
+
+        //printf("\n\n\n");
+        //printf("execute script in main;tid= %lu\n",syscall(SYS_gettid));
+        //printf("\n\n\n");
+
+        execute_script_ptr real_fcn =
+            (execute_script_ptr)dlsym(RTLD_NEXT,
+                    "_ZN5blink16ScriptController24ExecuteScriptInMainWorldERKNS_16ScriptSourceCodeERKNS_4KURLENS_20SanitizeScriptErrorsERKNS_18ScriptFetchOptionsE"); // use mangled name
+        if (real_fcn == NULL) {
+            printf("Error finding function 'ExecuteScriptInMainWorld'\n");
+            exit(1);
+        }
+
+        real_fcn(this,source_code,base_url,sanitize_script_errors,fetch_options);
+    }
+
+
+
+    typedef void* (*execute_script_isl_ptr)(
+            ScriptController*, 
+            int32_t world_id,
+            const ScriptSourceCode&,
+            const KURL&,
+            SanitizeScriptErrors);
+
+    /* I'm not sure how to rebuild v8::Local<v8::Value> since it's a templated class,
+     * so I just use a void* here.
+     * A preliminary look at clang name mangling makes it seem like the return type
+     * is not included in the mangled name, so this works to interpose, however
+     * it's returning a templated class and not a pointer so this doesn't seem to
+     * be the best way to do this. A better way would be to understand how
+     * v8::Local<v8::Value> works and recreate it in this file.
+     *
+     * So far as I can tell, the interposing works... but the testing was not extensive
+     *
+     * To test this function: install adblockplus and visit ads-blocker.com. This function
+     * only executes in an extension and not from page javascript. SEE:
+     *~/chromium/src/third_party/blink/renderer/bindings/core/v8/V8BindingDesign.md*/
+    
+    void* ScriptController::ExecuteScriptInIsolatedWorld(
+            int32_t world_id,
+            const ScriptSourceCode& source,
+            const KURL& base_url,
+            SanitizeScriptErrors sanitize_script_errors) {
+        ///printf("\n\n\n");
+        ///printf("execute script in isolated;tid= %lu\n",syscall(SYS_gettid));
+        ///printf("\n\n\n");
+
+        execute_script_isl_ptr real_fcn =
+            (execute_script_isl_ptr)dlsym(RTLD_NEXT,
+                    "_ZN5blink16ScriptController28ExecuteScriptInIsolatedWorldEiRKNS_16ScriptSourceCodeERKNS_4KURLENS_20SanitizeScriptErrorsE"); // use mangled name
+        if (real_fcn == NULL) {
+            printf("Error finding function 'ExecuteScriptInIsolatedWorld'\n");
+            exit(1);
+        }
+
+        return real_fcn(this,world_id,source,base_url,sanitize_script_errors);
+
+    }
+
+
+    /*class ExecutionContext;
+
+    
+    class V8ScriptRunner {
+        v8::MaybeLocal<v8::Value> CallFunction(
+                v8::Local<v8::Function>,
+                ExecutionContext*,
+                v8::Local<v8::Value>,
+                int,
+                v8::Local<v8::Value> args[],
+                v8::Isolate*);
+    };
+
+    typedef v8::MaybeLocal<v8::Value> (*script_runner_ptr)(
+//            V8ScriptRunner*,
+            v8::Local<v8::Function>,
+            ExecutionContext*,
+            v8::Local<v8::Value>,
+            int,
+            v8::Local<v8::Value>*,
+            v8::Isolate*);
+
+
+    v8::MaybeLocal<v8::Value> V8ScriptRunner::CallFunction(
+            v8::Local<v8::Function> function,
+            ExecutionContext* context,
+            v8::Local<v8::Value> receiver,
+            int argc,
+            v8::Local<v8::Value> args[],
+            v8::Isolate* isolate) {
+
+        printf("\n\n\n");
+        printf("CallFunction;tid= %lu\n",syscall(SYS_gettid));
+        printf("\n\n\n");
+
+        script_runner_ptr real_fcn =
+            (script_runner_ptr)dlsym(RTLD_NEXT,
+                    "_ZN5blink14V8ScriptRunner12CallFunctionEN2v85LocalINS1_8FunctionEEEPNS_16ExecutionContextENS2_INS1_5ValueEEEiPS8_PNS1_7IsolateE"); // use mangled name
+        if (real_fcn == NULL) {
+            printf("Error finding function 'CallFunction'\n");
+            exit(1);
+        }
+
+        return real_fcn(function,context,receiver,argc,args,isolate);
+
+    } */
+
 }
-/*
-	class WebPerformance {
-		double NavigationStart() const;
-		double FetchStart() const;
-		double FirstPaint() const;
-		double DomInteractive() const;
-	};
-
-	typedef double (*web_pref_ptr)(const WebPerformance*); // requires the "this" at least
-
-	// NavigationTiming API
-	double WebPerformance::NavigationStart() const {
-		struct timeval t1,t2;
-		int index = NAV_START;
-		static web_pref_ptr real_fcn = (web_pref_ptr)dlsym(RTLD_NEXT,"_ZNK5blink14WebPerformance15NavigationStartEv"); // use mangled name
-
-		if (real_fcn == NULL) {
-			printf("Error finding function 'NavigationStart'\n");
-			exit(1);
-		}
-
-		gettimeofday(&t1,NULL);
-		double ret_val =  real_fcn(this);
-		gettimeofday(&t2,NULL);
-		
-		process_avg_mtx.lock();
-
-		call_count[index]++;
-		moving_avg_dur[index] = ((double) (t2.tv_usec - t1.tv_usec) / 1000 +
-						(double) (t2.tv_sec - t1.tv_sec) * 1000) + (call_count[index]-1) * moving_avg_dur[index];
-		
-		if(call_count[index] != 0) {
-				moving_avg_dur[index] /= call_count[index];
-		}
-
-		process_avg_mtx.unlock();
-
-		pid_t mypid = getpid();
-		if (call_count[index] % 50 == 0) {
-			printf("process (%d,'NavigationStart'): number of calls: %ld, Average Duration: %lf ms\n",mypid,call_count[index],moving_avg_dur[index]);
-		}
-		
-		return ret_val;
-	}
-
-	double WebPerformance::FetchStart() const {
-		struct timeval t1,t2;
-		int index = FETCH_START;
-
-		static web_pref_ptr real_fcn = (web_pref_ptr)dlsym(RTLD_NEXT,"_ZNK5blink14WebPerformance10FetchStartEv"); // use mangled name
-		if (real_fcn == NULL) {
-			printf("Error finding function 'FetchStart'\n");
-			exit(1);
-		}
-
-		gettimeofday(&t1,NULL);
-		double ret_val =  real_fcn(this);
-		gettimeofday(&t2,NULL);
-		
-		process_avg_mtx.lock();
-
-		call_count[index]++;
-		moving_avg_dur[index] = ((double) (t2.tv_usec - t1.tv_usec) / 1000 +
-						(double) (t2.tv_sec - t1.tv_sec) * 1000) + (call_count[index]-1) * moving_avg_dur[index];
-
-		if (call_count[index] != 0) {
-				moving_avg_dur[index] /= call_count[index];
-		}
-
-		process_avg_mtx.unlock();
-
-		pid_t mypid = getpid();
-		if (call_count[index] % 50 == 0) {
-			printf("process (%d,'FetchStart'): number of calls: %ld, Average Duration: %lf ms\n",mypid,call_count[index],moving_avg_dur[index]);
-		}
-		
-		return ret_val;
-	}
-
-	double WebPerformance::FirstPaint() const {
-		struct timeval t1,t2;
-		int index = FIRST_PAINT;
-
-		static web_pref_ptr real_fcn = (web_pref_ptr)dlsym(RTLD_NEXT,"_ZNK5blink14WebPerformance10FirstPaintEv"); // use mangled name
-		if (real_fcn == NULL) {
-			printf("Error finding function 'FirstPaint'\n");
-			exit(1);
-		}
-
-		gettimeofday(&t1,NULL);
-		double ret_val =  real_fcn(this);
-		gettimeofday(&t2,NULL);
-		
-
-		process_avg_mtx.lock();
-
-		call_count[index]++;
-		moving_avg_dur[index] = ((double) (t2.tv_usec - t1.tv_usec) / 1000 + 
-						(double) (t2.tv_sec - t1.tv_sec) * 1000) + (call_count[index]-1) * moving_avg_dur[index];
-		if (call_count[index] != 0) {
-				moving_avg_dur[index] /= call_count[index];
-		}
-
-		process_avg_mtx.unlock();
-
-		pid_t mypid = getpid();
-		if (call_count[index] % 50 == 0) {
-			printf("process (%d,'FirstPaint'): number of calls: %ld, Average Duration: %lf ms\n",mypid,call_count[index],moving_avg_dur[index]);
-		}
-		return ret_val;
-	}
-
-	double WebPerformance::DomInteractive() const {
-			struct timeval t1,t2;
-			int index = DOM_INTER;
-
-			static web_pref_ptr real_fcn = (web_pref_ptr)dlsym(RTLD_NEXT,"_ZNK5blink14WebPerformance14DomInteractiveEv"); // use mangled name
-			if (real_fcn == NULL) {
-					printf("Error finding function 'DomInteractive'\n");
-					exit(1);
-			}
-
-			gettimeofday(&t1,NULL);
-			double ret_val =  real_fcn(this);
-			gettimeofday(&t2,NULL);
-
-
-			process_avg_mtx.lock();
-
-			call_count[index]++;
-			moving_avg_dur[index] = ((double) (t2.tv_usec - t1.tv_usec) / 1000 + 
-							(double) (t2.tv_sec - t1.tv_sec) * 1000) + (call_count[index]-1) * moving_avg_dur[index];
-			if (call_count[index] != 0) {
-					moving_avg_dur[index] /= call_count[index];
-			}
-
-			process_avg_mtx.unlock();
-
-			pid_t mypid = getpid();
-			if (call_count[index] != 0 ) {
-					printf("process (%d,'DomInteractive'): number of calls: %ld, Average Duration: %lf ms\n",mypid,call_count[index],moving_avg_dur[index]);
-			}
-			return ret_val;
-	}
-} */
