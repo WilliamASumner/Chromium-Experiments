@@ -46,8 +46,7 @@ namespace blink {
 
     void HTMLDocumentParser::PumpPendingSpeculations() {
         //printf("\n\n\n");
-        //printf("PumpPendingSpeculations; tid = %lu\n",
-                //syscall(SYS_gettid));
+        //printf("PumpPendingSpeculations; tid = %lu\n",syscall(SYS_gettid));
         //printf("\n\n\n");
 
         pump_pend_ptr real_fcn =
@@ -263,7 +262,7 @@ namespace blink {
                 const KURL& base_url,
                 SanitizeScriptErrors,
                 const ScriptFetchOptions&);
-        void* ExecuteScriptInIsolatedWorld(
+        v8::Local<v8::Value> ExecuteScriptInIsolatedWorld(
                 int32_t world_id,
                 const ScriptSourceCode& source,
                 const KURL& base_url,
@@ -301,35 +300,25 @@ namespace blink {
 
 
 
-    typedef void* (*execute_script_isl_ptr)(
+    typedef v8::Local<v8::Value> (*execute_script_isl_ptr)(
             ScriptController*, 
             int32_t world_id,
             const ScriptSourceCode&,
             const KURL&,
             SanitizeScriptErrors);
 
-    /* I'm not sure how to rebuild v8::Local<v8::Value> since it's a templated class,
-     * so I just use a void* here.
-     * A preliminary look at clang name mangling makes it seem like the return type
-     * is not included in the mangled name, so this works to interpose, however
-     * it's returning a templated class and not a pointer so this doesn't seem to
-     * be the best way to do this. A better way would be to understand how
-     * v8::Local<v8::Value> works and recreate it in this file.
-     *
-     * So far as I can tell, the interposing works... but the testing was not extensive
-     *
-     * To test this function: install adblockplus and visit ads-blocker.com. This function
-     * only executes in an extension and not from page javascript. SEE:
-     *~/chromium/src/third_party/blink/renderer/bindings/core/v8/V8BindingDesign.md*/
+     /* To test this function: install adblockplus and visit ads-blocker.com. This function
+      * only executes in an extension and not from page javascript. SEE:
+      * ~/chromium/src/third_party/blink/renderer/bindings/core/v8/V8BindingDesign.md*/
     
-    void* ScriptController::ExecuteScriptInIsolatedWorld(
+    v8::Local<v8::Value> ScriptController::ExecuteScriptInIsolatedWorld(
             int32_t world_id,
             const ScriptSourceCode& source,
             const KURL& base_url,
             SanitizeScriptErrors sanitize_script_errors) {
-        ///printf("\n\n\n");
-        ///printf("execute script in isolated;tid= %lu\n",syscall(SYS_gettid));
-        ///printf("\n\n\n");
+        printf("\n\n\n");
+        printf("execute script in isolated;tid= %lu\n",syscall(SYS_gettid));
+        printf("\n\n\n");
 
         execute_script_isl_ptr real_fcn =
             (execute_script_isl_ptr)dlsym(RTLD_NEXT,
@@ -346,7 +335,6 @@ namespace blink {
 
     class ExecutionContext;
 
-    
     class V8ScriptRunner {
         static v8::MaybeLocal<v8::Value> CallFunction(
                 v8::Local<v8::Function>,
@@ -374,12 +362,9 @@ namespace blink {
             v8::Local<v8::Value> args[],
             v8::Isolate* isolate) {
 
-        printf("\n\n\n");
-        printf("CallFunction;tid= %lu\n",syscall(SYS_gettid));
-        printf("argc= %d\n",argc);
-        printf("args= %p\n",args);
-        printf("isolate= %p\n",isolate);
-        printf("\n\n\n");
+        //printf("\n\n\n");
+        //printf("CallFunction;tid= %lu\n",syscall(SYS_gettid));
+        //printf("\n\n\n");
 
         script_runner_ptr real_fcn =
             (script_runner_ptr)dlsym(RTLD_NEXT,
