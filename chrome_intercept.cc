@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <sys/types.h> // getpid()
 
+#include "chrome_includes/v8/v8.h" // v8 stuff
+
 #include <mutex>
 std::mutex process_avg_mtx;
 
@@ -29,39 +31,6 @@ double moving_avg_len[30] = {0.0};
 namespace WTF {
     class String;
 };
-
-/* v8 stuff */
-/* Some helper definition classes, (very) crude recreation*/
-namespace v8 {
-
-    template <class T> class Local {
-        private:
-            T* val_;
-    };
-
-    class Value {
-        public:
-            Value(void* isolate, Local<v8::Value> obj);
-            ~Value();
-        private:
-            uint16_t* str_;
-            int length_;
-    };
-
-    template <class T> class MaybeLocal {
-        private:
-            T* val_;
-    };
-
-    class Function { // indirectly inherits from Value
-        private:
-            uint16_t* str_;
-            int length_;
-    };
-
-    class Isolate;
-}
-
 
 namespace blink {
 
@@ -264,9 +233,9 @@ namespace blink {
             LocalFrameView*,
             bool);
     void LocalFrameView::PerformLayout(bool in_subtree_layout) {
-        printf("\n\n\n");
-        printf("PerformLayout;tid= %lu\n",syscall(SYS_gettid));
-        printf("\n\n\n");
+        //printf("\n\n\n");
+        //printf("PerformLayout;tid= %lu\n",syscall(SYS_gettid));
+        //printf("\n\n\n");
 
         perform_layout_ptr real_fcn =
             (perform_layout_ptr)dlsym(RTLD_NEXT,
@@ -375,11 +344,11 @@ namespace blink {
     }
 
 
-    /*class ExecutionContext;
+    class ExecutionContext;
 
     
     class V8ScriptRunner {
-        v8::MaybeLocal<v8::Value> CallFunction(
+        static v8::MaybeLocal<v8::Value> CallFunction(
                 v8::Local<v8::Function>,
                 ExecutionContext*,
                 v8::Local<v8::Value>,
@@ -389,7 +358,6 @@ namespace blink {
     };
 
     typedef v8::MaybeLocal<v8::Value> (*script_runner_ptr)(
-//            V8ScriptRunner*,
             v8::Local<v8::Function>,
             ExecutionContext*,
             v8::Local<v8::Value>,
@@ -408,6 +376,9 @@ namespace blink {
 
         printf("\n\n\n");
         printf("CallFunction;tid= %lu\n",syscall(SYS_gettid));
+        printf("argc= %d\n",argc);
+        printf("args= %p\n",args);
+        printf("isolate= %p\n",isolate);
         printf("\n\n\n");
 
         script_runner_ptr real_fcn =
@@ -420,6 +391,6 @@ namespace blink {
 
         return real_fcn(function,context,receiver,argc,args,isolate);
 
-    } */
+    }
 
 }
