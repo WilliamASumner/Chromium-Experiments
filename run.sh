@@ -56,7 +56,7 @@ while getopts ":hpgb:d:l:w:f:" opt; do
             ;;
 
         w)
-            PAGE="$OPTARG"
+            WEBPAGE="$OPTARG"
             ;;
 
         f)
