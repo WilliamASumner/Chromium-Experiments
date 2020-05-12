@@ -1,3 +1,3 @@
 #!/bin/bash
 #Chrome script
-clang++ -shared -fPIC -ldl -o intercept-chrome.so chrome_intercept.cc 
+clang++ -g -shared -fPIC -ldl -o intercept-chrome.so chrome_intercept.cc 
