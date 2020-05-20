@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export LD_PRELOAD=$PWD/libintercept.so
+export LD_LIBRARY_PATH="$PWD/experiment/NanoLog/:$LD_LIBRARY_PATH"
 XVFB_PID=`pgrep Xvfb`
 BINARY=chrome
 CHROME_DIR=/home/vagrant/chromium/src/out/x64Linux
