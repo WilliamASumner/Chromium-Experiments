@@ -3,7 +3,7 @@
 default: libintercept.so
 
 run: libintercept.so
-	./permutate.sh -c './run.sh'
+	./permutate.sh -c './run.sh' -f '-w #site'
 
 libintercept.so: chrome_intercept.cc experiment/NanoLog/libnanolog.so experiment/cpu_utils.* experiment/experimenter.*
 	clang++ -g -shared -fPIC -ldl -lnanolog -Lexperiment/NanoLog/ -o libintercept.so chrome_intercept.cc experiment/cpu_utils.cc experiment/experimenter.cc
