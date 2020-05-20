@@ -26,7 +26,12 @@ blink::LocalFrameView::UpdateLifecyclePhasesInternal | Paint
 blink::ScriptController::EvaluateScriptInMainWorld | Javascript
 blink::ScriptController::EvaluateScriptInIsolatedWorld | Javascript
 blink::v8ScriptRunner::CallFunction | Javascript
-
+---
+## Interposition
+To implement interposition, we use the `LD_PRELOAD` trick. The idea is to get create a shared library whose function signatures match the desired interposition
+targets exactly, so that when `ld` looks for a dynamic function, your function gets loaded first. To call the original function as if nothing has happened,
+you can get a handle by using `dlsym(RTLD_NEXT,"name_as_in_binary"` You can learn more [here](www.goldsborough.me/c/low-level/kernel/2016/08/29/16-48-53-the_-ld_preload-_trick/). It is important to note that for C++ interposition special attention to generate the exact same mangled needs to be given, and unless your interposing a method declared as `static`, you will need to explicitly pass the `this` parameter so that the original function can access its own data.
+---
 ## Running
 ```
 make
