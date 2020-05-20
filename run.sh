@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export LD_PRELOAD=$PWD/intercept-chrome.so
+export LD_PRELOAD=$PWD/libintercept.so
 XVFB_PID=`pgrep Xvfb`
 BINARY=chrome
 CHROME_DIR=/home/vagrant/chromium/src/out/x64Linux
@@ -14,7 +14,7 @@ echo_usage() {
     echo "-g : Gui,       runs Chromium with a gui rather than Xvfb"
     echo "-b : Binary,    changes binary to specified file. Default is 'chrome'"
     echo "-d : Dir,       changes directory where specified binary is located"
-    echo "-l : Ldpreload, changes LD_PRELOAD value. No value unsets LD_PRELOAD"
+    echo "-l : Ldpreload, changes LD_PRELOAD value. No value unsets LD_PRELOAD. Default is './libintercept.so'"
     echo "-w : Webpage,   changes default page to be loaded. Default is 'cnn.com'"
     echo "-f : Flags,     changes Chromium flags. Default is '--no-zyogote --no-sandbox'"
     exit 0
@@ -40,15 +40,18 @@ while getopts ":hpgb:d:l:w:f:" opt; do
 
         d)
             if [ ! -d "$OPTARG" ]; then
-                echo "$0: invalid directory $OPTARG"
+                echo "$0: invalid directory '$OPTARG' for option '-l'"
                 exit 1
             fi
             CHROME_DIR="$OPTARG"
             ;;
 
         l)
-            if [ ! -f "$OPTARG" ]; then
-                echo "$0: invalid preload $OPTARG"
+            if [[ "$f" == "None" ]]; then
+                echo "Received 'None' for option '-l', unsetting LD_PRELOAD"
+                unset LD_PRELOAD
+            elif [ ! -f "$OPTARG" ]; then
+                echo "$0: invalid preload file '$OPTARG' for option '-l'"
                 exit 1
             fi
 
@@ -75,8 +78,8 @@ while getopts ":hpgb:d:l:w:f:" opt; do
                     echo_usage
                     ;;
                 l)
-                    echo "$0: missing argument for option '-l', unsetting LD_PRELOAD"
-                    unset LD_PRELOAD
+                    echo "$0: missing argument for option '-l', use 'None' to prevent preloading"
+                    echo_usage
                     ;;
                 w)
                     echo "$0: missing webpage for option '-w'" >&2
