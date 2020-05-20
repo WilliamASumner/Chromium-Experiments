@@ -127,8 +127,8 @@ void experiment_fentry(const char* func_name) {
 
 void experiment_fexit(const char* func_name) {
     clock_gettime(CLOCK_MONOTONIC,&timeEnd);
-    double latency = ((double)timeEnd.tv_sec*1000 + (double)timeEnd.tv_nsec*ns_to_ms)
-                        - ((double)timeStart.tv_sec*1000 + (double)timeStart.tv_nsec*ns_to_ms);
+    double latency = ((double)timeEnd.tv_sec*1000 + (double)timeEnd.tv_nsec/ns_to_ms)
+                        - ((double)timeStart.tv_sec*1000 + (double)timeStart.tv_nsec/ns_to_ms);
 
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask = _set_affinity_all();
