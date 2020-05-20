@@ -2,3 +2,4 @@
 *.out
 .*.un~
 experiment/NanoLog
+logs/
