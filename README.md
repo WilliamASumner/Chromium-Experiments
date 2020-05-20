@@ -19,7 +19,7 @@ Things that will make your life easier:
     - `interpose.hh`: Credits to ccurtsinger, for interposing \_libc\_start\_min
     - `mapping.sh`: A script for recording memory mappings of loaded libraries
 - `misc`
-    - `example`: Simple interpositioning example illustrating issues
+    - `example`: Simple interposition example illustrating how interposing works
     - `odroid-port`: Old odroid scripts that are being ported for this project
     - `thoughts.txt`: Collection of my thoughts as I've been working on this project
     - `web-performace-syms.txt`: Mangled symbols of potential interest
