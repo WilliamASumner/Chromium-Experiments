@@ -1,7 +1,9 @@
 #include <dlfcn.h> // symbol lookup
 #include "experiment/interpose.hh" // INTERPOSE
 #include "experiment/experimenter.hh" // experiment fns
+#include <stdio.h>
 
+#include <string.h>
 #include <unistd.h>
 #include <sys/syscall.h> // get tid
 
@@ -11,16 +13,26 @@
 /* Chrome Startup to initialize experimentt */
 typedef int (*main_fcn)(int, char**, char**);
 typedef int (*libc_main_fcn)(main_fcn,int,char**,void (*)(void), void(*)(void), void(*)(void),void*);
+
+thread_local main_fcn orig_main;
+
+int my_main(int argc, char **argv, char **env) {
+    //TODO watch out for multiple threads running this... might create weird output
+   experiment_init(argv[0]); // set up logger, etc. Not running this causes a SIGSEV/SIGINT
+   int result = orig_main(argc,argv,env);
+   return result;
+}
+
+
 extern "C" int __libc_start_main(main_fcn main, int argc, char **ubp_av, void (*init)(void), void(*fini)(void), void (*rtld_fini) (void), void (*stack_end)) {
 
-    //TODO watch out for multiple threads running this... might create weird output
-    experiment_init(); // set up logger, etc.
-
-    fprintf(stderr,"Caught lib_start_main\n");
     libc_main_fcn start_main = (libc_main_fcn)dlsym(RTLD_NEXT,"__libc_start_main");
-    int result =  start_main(main,argc,ubp_av,init,fini,rtld_fini,stack_end); // Call real __libc_start_main
-    fprintf(stderr,"Done cleaning up\n");
-    return result;
+    if(start_main == NULL) {
+        fprintf(stderr,"Error: no __libc_start_main found\n");
+        exit(1);
+    }
+    orig_main = main;
+    return  start_main(my_main,argc,ubp_av,init,fini,rtld_fini,stack_end); // Call real __libc_start_main
 }
 
 
