@@ -5,10 +5,17 @@
 #include <unistd.h> // tid
 #include <sys/syscall.h> // get tid
 #include <time.h> 
+#include <signal.h>
 
 #include"NanoLog/NanoLog.hpp" // fast logger
 #include"cpu_utils.hh" // affinity functions
 #include "experimenter.hh"
+
+const int timeout_s = 45;
+
+void sigalrm_handler( int sig) {
+    experiment_stop();
+}
 
 struct config_t {
     int bigs;
@@ -43,6 +50,15 @@ std::string mask_to_str(cpu_set_t mask) {
 }
 
 void experiment_init() {
+
+    struct sigaction sact;
+    sigemptyset(&sact.sa_mask);
+    sact.sa_flags = 0;
+    sact.sa_handler = sigalrm_handler;
+    sigaction(SIGALRM, &sact, NULL);
+
+    alarm(timeout_s);
+
     char* env_log = getenv("LOG_FILE");
     if(env_log == NULL) {
         fprintf(stderr,"Error: no LOG_FILE defined\n");
@@ -60,6 +76,11 @@ void experiment_init() {
     std::string logdir = "/home/vagrant/research/interpose/logs/";
     std::string logfile(env_log);
     nanolog::initialize(nanolog::GuaranteedLogger(),logdir, logfile,size_mb);
+}
+
+void experiment_stop() {
+    fprintf(stderr,"Program exceeded %d s limit\n",timeout_s);
+    exit(0);
 }
 
 

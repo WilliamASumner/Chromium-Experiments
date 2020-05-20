@@ -13,6 +13,7 @@ typedef int (*main_fcn)(int, char**, char**);
 typedef int (*libc_main_fcn)(main_fcn,int,char**,void (*)(void), void(*)(void), void(*)(void),void*);
 extern "C" int __libc_start_main(main_fcn main, int argc, char **ubp_av, void (*init)(void), void(*fini)(void), void (*rtld_fini) (void), void (*stack_end)) {
 
+    //TODO watch out for multiple threads running this... might create weird output
     experiment_init(); // set up logger, etc.
 
     fprintf(stderr,"Caught lib_start_main\n");
