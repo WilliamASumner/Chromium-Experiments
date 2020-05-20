@@ -4,13 +4,15 @@
 - A useful set of tools for running experiments that run by interposing important Chromium functions
 
 ### Interposed Functions
-We've tracked down some interesting functions in the main phases of a chrome page load:
+We've tracked down some interesting functions in the main phases of a chrome page load.
+These phases can happen out of this order in some cases, but this is the general flow.
 1. Parsing HTML
 2. Parsing CSS
 3. Layout
 4. Paint
 5. Javacript
-These phases can happen out of this order in some cases, but this is the general flow.
+
+---
 Here's a specific list of the functions we've interposed so far:
 
 *Function* | *Phase*
