@@ -4,7 +4,8 @@ FILE_PREFIX="output"
 ITERATIONS=10
 
 declare -a configs governors iterconfig itergovernor sites # declare arrays
-configs=("4l-0b" "4l-4b" "0l-4b" "4l-1b" "4l-2b" "2l-0b" "1l-0b" "0l-1b" "0l-2b") # all core configs to test with
+#configs=("4l-0b" "4l-4b" "0l-4b" "4l-1b" "4l-2b" "2l-0b" "1l-0b" "0l-1b" "0l-2b") # all core configs to test with
+configs=("4l-0b") # all core configs to test with
 governors=("pi" "ii" "ip" "pp") # all core configs to test with
 sites=("cnn.com")
 
@@ -23,12 +24,12 @@ array_contains () {
 
 gen_iterconfig() { # generate a permutation of the configs
     iterconfig=()
-    for (( i=1; i <= 7; i++ ))
+    while [[ "${#iterconfig[@]}" != "${#configs[@]}" ]]
     do
         x=$( echo "$RANDOM % 7" | bc )
         array_contains iterconfig ${configs["$x"]}
         while [ $? -eq 0 ]; do
-            x=$( echo "$RANDOM % 7" | bc )
+            x=$( echo "$RANDOM % ${#configs[@]}" | bc )
             array_contains iterconfig ${configs["$x"]}
         done
         iterconfig=("${iterconfig[@]}" ${configs["$x"]})
