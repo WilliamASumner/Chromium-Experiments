@@ -1,30 +1,26 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <dlfcn.h>
-#include <sys/time.h> // for timing
-
-#include <sys/syscall.h> // pid syscall
-
-#include "cpu_utils.h" // AFF IN SCOPE
+#include <dlfcn.h> // symbol lookup
+#include "experiment/interpose.hh" // INTERPOSE
+#include "experiment/experimenter.hh" // experiment fns
 
 #include <unistd.h>
-#include <sys/types.h> // getpid()
+#include <sys/syscall.h> // get tid
 
 #include "chrome_includes/v8/v8.h" // v8 stuff
 
-#include <mutex>
-std::mutex process_avg_mtx;
 
-/* Stat buffers */
-long call_count[30] = {0};
-double moving_avg_dur[30] = {0.0};
-double moving_avg_len[30] = {0.0};
+/* Chrome Startup to initialize experimentt */
+typedef int (*main_fcn)(int, char**, char**);
+typedef int (*libc_main_fcn)(main_fcn,int,char**,void (*)(void), void(*)(void), void(*)(void),void*);
+extern "C" int __libc_start_main(main_fcn main, int argc, char **ubp_av, void (*init)(void), void(*fini)(void), void (*rtld_fini) (void), void (*stack_end)) {
 
-/* Defines for interposed function indices into stat buffers */
-#define NAV_START   0
-#define FETCH_START 1
-#define FIRST_PAINT 2
-#define DOM_INTER   3
+    experiment_init(); // set up logger, etc.
+
+    fprintf(stderr,"Caught lib_start_main\n");
+    libc_main_fcn start_main = (libc_main_fcn)dlsym(RTLD_NEXT,"__libc_start_main");
+    int result =  start_main(main,argc,ubp_av,init,fini,rtld_fini,stack_end); // Call real __libc_start_main
+    fprintf(stderr,"Done cleaning up\n");
+    return result;
+}
 
 
 /* WTF::String - used a lot in blink */
@@ -45,9 +41,7 @@ namespace blink {
     typedef void (*pump_pend_ptr)(HTMLDocumentParser*); // requires the "this" at least
 
     void HTMLDocumentParser::PumpPendingSpeculations() {
-        //printf("\n\n\n");
-        //printf("PumpPendingSpeculations; tid = %lu\n",syscall(SYS_gettid));
-        //printf("\n\n\n");
+        unsigned long tid = syscall(SYS_gettid);
 
         pump_pend_ptr real_fcn =
             (pump_pend_ptr)dlsym(RTLD_NEXT,
@@ -57,24 +51,26 @@ namespace blink {
             exit(1);
         }
 
+        experiment_fentry("PumpPendingSpeculations");
         real_fcn(this);
+        experiment_fexit("PumpPendingSpeculations");
     }
 
 
     typedef void (*resume_parse_ptr)(HTMLDocumentParser*); // requires the "this" at least
 
     void HTMLDocumentParser::ResumeParsingAfterYield() {
-        //printf("Resuming Parsing; tid = %lu\n",syscall(SYS_gettid));
+        unsigned long tid = syscall(SYS_gettid);
         resume_parse_ptr real_fcn =
             (resume_parse_ptr)dlsym(RTLD_NEXT,"_ZN5blink18HTMLDocumentParser23ResumeParsingAfterYieldEv"); // use mangled name
         if (real_fcn == NULL) {
             printf("Error finding function 'ResumeParsingAfterYield'\n");
             exit(1);
         }
-        // Run all big cores for the duration of this function
-        //_set_affinity_big();
+
+        experiment_fentry("ResumeParsingAfterYield");
         real_fcn(this);
-        //_set_affinity_all();
+        experiment_fexit("ResumeParsingAfterYield");
     }
 
     /* Requisite Class Definitions */
@@ -109,10 +105,8 @@ namespace blink {
             const WTF::String& text,
             CSSDeferPropertyParsing defer_property_parsing,
             bool allow_import_rules) {
+        unsigned long tid = syscall(SYS_gettid);
 
-        //printf("\n\n\n");
-        //printf("ParseSheet; tid = %lu\n",syscall(SYS_gettid));
-        //printf("\n\n\n");
 
         parse_sheet_ptr real_fcn =
             (parse_sheet_ptr)dlsym(RTLD_NEXT,
@@ -123,7 +117,9 @@ namespace blink {
         }
 
         // enum class, should have no self param
+        experiment_fentry("ParseSheet");
         ParseSheetResult result = real_fcn(context,style_sheet,text,defer_property_parsing,allow_import_rules);
+        experiment_fexit("ParseSheet");
 
         return result;
     }
@@ -137,9 +133,7 @@ namespace blink {
 
 
     void Document::UpdateStyleAndLayoutTree() {
-        //printf("\n\n\n");
-        //printf("UpdateStyle; tid = %lu\n",syscall(SYS_gettid));
-        //printf("\n\n\n");
+        unsigned long tid = syscall(SYS_gettid);
 
         update_style_ptr real_fcn =
             (update_style_ptr)dlsym(RTLD_NEXT,
@@ -149,7 +143,9 @@ namespace blink {
             exit(1);
         }
 
+        experiment_fentry("UpdateStyleAndLayoutTree");
         real_fcn(this);
+        experiment_fexit("UpdateStyleAndLayoutTree");
     }
 
 
@@ -211,9 +207,7 @@ namespace blink {
 
     void LocalFrameView::UpdateLifecyclePhasesInternal(
             DocumentLifecycle::LifecycleState target_state) {
-        //printf("\n\n\n");
-        //printf("UpdateLifecycle;tid= %lu\n",syscall(SYS_gettid));
-        //printf("\n\n\n");
+        unsigned long tid = syscall(SYS_gettid);
 
         update_lifecycle_ptr real_fcn =
             (update_lifecycle_ptr)dlsym(RTLD_NEXT,
@@ -223,7 +217,9 @@ namespace blink {
             exit(1);
         }
 
+        experiment_fentry("UpdateLifeCyclePhasesInternal");
         real_fcn(this,target_state);
+        experiment_fexit("UpdateLifeCyclePhasesInternal");
     }
 
     /* Layout Stage */
@@ -232,9 +228,7 @@ namespace blink {
             LocalFrameView*,
             bool);
     void LocalFrameView::PerformLayout(bool in_subtree_layout) {
-        //printf("\n\n\n");
-        //printf("PerformLayout;tid= %lu\n",syscall(SYS_gettid));
-        //printf("\n\n\n");
+        unsigned long tid = syscall(SYS_gettid);
 
         perform_layout_ptr real_fcn =
             (perform_layout_ptr)dlsym(RTLD_NEXT,
@@ -244,7 +238,9 @@ namespace blink {
             exit(1);
         }
 
+        experiment_fentry("PerformLayout");
         real_fcn(this,in_subtree_layout);
+        experiment_fexit("PerformLayout");
 
     }
 
@@ -282,10 +278,8 @@ namespace blink {
             const KURL& base_url,
             SanitizeScriptErrors sanitize_script_errors,
             const ScriptFetchOptions& fetch_options){
+        unsigned long tid = syscall(SYS_gettid);
 
-        //printf("\n\n\n");
-        //printf("execute script in main;tid= %lu\n",syscall(SYS_gettid));
-        //printf("\n\n\n");
 
         execute_script_ptr real_fcn =
             (execute_script_ptr)dlsym(RTLD_NEXT,
@@ -295,7 +289,9 @@ namespace blink {
             exit(1);
         }
 
+        experiment_fentry("ExecuteScriptInMainWorld");
         real_fcn(this,source_code,base_url,sanitize_script_errors,fetch_options);
+        experiment_fexit("ExecuteScriptInMainWorld");
     }
 
 
@@ -316,9 +312,7 @@ namespace blink {
             const ScriptSourceCode& source,
             const KURL& base_url,
             SanitizeScriptErrors sanitize_script_errors) {
-        printf("\n\n\n");
-        printf("execute script in isolated;tid= %lu\n",syscall(SYS_gettid));
-        printf("\n\n\n");
+        unsigned long tid = syscall(SYS_gettid);
 
         execute_script_isl_ptr real_fcn =
             (execute_script_isl_ptr)dlsym(RTLD_NEXT,
@@ -328,8 +322,11 @@ namespace blink {
             exit(1);
         }
 
-        return real_fcn(this,world_id,source,base_url,sanitize_script_errors);
+        experiment_fentry("ExecuteScriptInIsolatedWorld");
+        v8::Local<v8::Value> result = real_fcn(this,world_id,source,base_url,sanitize_script_errors);
+        experiment_fexit("ExecuteScriptInIsolatedWorld");
 
+        return result;
     }
 
 
@@ -361,10 +358,8 @@ namespace blink {
             int argc,
             v8::Local<v8::Value> args[],
             v8::Isolate* isolate) {
+        unsigned long tid = syscall(SYS_gettid);
 
-        //printf("\n\n\n");
-        //printf("CallFunction;tid= %lu\n",syscall(SYS_gettid));
-        //printf("\n\n\n");
 
         script_runner_ptr real_fcn =
             (script_runner_ptr)dlsym(RTLD_NEXT,
@@ -374,7 +369,10 @@ namespace blink {
             exit(1);
         }
 
-        return real_fcn(function,context,receiver,argc,args,isolate);
+        experiment_fentry("CallFunction");
+        v8::MaybeLocal<v8::Value> result = real_fcn(function,context,receiver,argc,args,isolate);
+        experiment_fexit("CallFunction");
+        return result;
 
     }
 
