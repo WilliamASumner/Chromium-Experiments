@@ -4,11 +4,6 @@
 #include <random> // better than rand()
 #include <sched.h>
 
-
-static std::random_device rd;
-static std::mt19937 mt(rd());
-static std::uniform_int_distribution<int> dist(0,3);
-
 void _init_affinity() {
     return;
 }
@@ -34,7 +29,9 @@ cpu_set_t _set_affinity_all(void) {
     return mask;
 }
 
-cpu_set_t _set_affinity_permute(int bigs, int lils) {
+cpu_set_t _set_affinity_permute(int bigs, int lils, std::mt19937 mt) {
+    static std::uniform_int_distribution<int> dist(0,3);
+
     cpu_set_t mask;
     CPU_ZERO(&mask);
     CPU_SET(0,&mask);

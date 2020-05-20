@@ -1,17 +1,27 @@
 #include <stdio.h> // printf
 #include <stdlib.h> // getenv
 #include <iostream>
+#include <mutex>
 
 #include <unistd.h> // tid
 #include <sys/syscall.h> // get tid
 #include <time.h> 
 #include <signal.h>
+#include <random>
 
-#include"NanoLog/NanoLog.hpp" // fast logger
 #include"cpu_utils.hh" // affinity functions
 #include "experimenter.hh"
 
+#include <g3log/g3log.hpp> // logger
+#include <g3log/logworker.hpp>
+
+
 const int timeout_s = 45;
+std::mutex mut;
+bool did_start = false;
+
+std::unique_ptr<g3::LogWorker> worker = nullptr;
+std::unique_ptr<g3::FileSinkHandle> handle = nullptr;
 
 void sigalrm_handler( int sig) {
     experiment_stop();
@@ -49,7 +59,13 @@ std::string mask_to_str(cpu_set_t mask) {
     return result;
 }
 
-void experiment_init() {
+void experiment_init(const char *exec_name) {
+    mut.lock();
+    if (did_start) {
+        printf("Already started\n");
+        mut.unlock();
+        return;
+    }
 
     struct sigaction sact;
     sigemptyset(&sact.sa_mask);
@@ -58,6 +74,7 @@ void experiment_init() {
     sigaction(SIGALRM, &sact, NULL);
 
     alarm(timeout_s);
+    fprintf(stderr,"Initializing experiment");
 
     char* env_log = getenv("LOG_FILE");
     if(env_log == NULL) {
@@ -75,20 +92,35 @@ void experiment_init() {
 
     std::string logdir = "/home/vagrant/research/interpose/logs/";
     std::string logfile(env_log);
-    nanolog::initialize(nanolog::GuaranteedLogger(),logdir, logfile,size_mb);
+
+    /*std::random_device rd;
+    std::mt19937 mt(rd());
+
+    // generate unique file id, so render processes don't mess eachother up
+    std::string str("0123456789abcdefghijklmnopqrstuvwxyz");
+    std::shuffle(str.begin(), str.end(),mt);
+    std::string id = str.substr(0,8);*/
+
+    worker=g3::LogWorker::createLogWorker();
+    handle=worker->addDefaultLogger(logfile,logdir);
+
+    g3::initializeLogging(worker.get());
+
+    did_start = true; // done initializing, all threads can go now
+    mut.unlock();
 }
 
 void experiment_stop() {
-    fprintf(stderr,"Program exceeded %d s limit\n",timeout_s);
+    fprintf(stderr,"\nProgram exceeded %d s limit\n",timeout_s);
+    g3::internal::shutDownLogging();
     exit(0);
 }
 
 
 void experiment_fentry(const char* func_name) {
     unsigned int tid = syscall(SYS_gettid);
-    LOG_INFO << tid << ": Entering function: " << func_name << "\n";
     cpu_set_t mask = _set_affinity_little();
-    LOG_INFO << tid << ": Using mask: " << mask_to_str(mask) << "\n";
+    LOG(INFO) << tid << ": Entering function: " << func_name << " mask: " << mask_to_str(mask);
 
     clock_gettime(CLOCK_MONOTONIC,&timeStart);
 }
@@ -99,8 +131,6 @@ void experiment_fexit(const char* func_name) {
                         - ((double)timeStart.tv_sec*1000 + (double)timeStart.tv_nsec*ns_to_ms);
 
     unsigned int tid = syscall(SYS_gettid);
-    LOG_INFO << tid << ": Exiting function: " << func_name << "\n";
     cpu_set_t mask = _set_affinity_all();
-    LOG_INFO << tid << ": Resetting mask: " << mask_to_str(mask) << "\n";
-    LOG_INFO << tid << ": Latency: " << latency << "\n";
+    LOG(INFO) << tid << ": Exiting function: " << func_name << " mask: " << mask_to_str(mask) << " latency: " << latency;
 }

@@ -1,7 +1,7 @@
 
 void experiment_set_config(const char* config);
 
-void experiment_init();
+void experiment_init(const char*);
 
 void experiment_stop();
 
