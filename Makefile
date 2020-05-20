@@ -4,8 +4,11 @@ PERM_PREFIX:="output"
 
 default: libintercept.so
 
-run: libintercept.so
+run: logs/ libintercept.so
 	./permutate.sh -c './run.sh' -f '-w #site' -p $(PERM_PREFIX)
+
+logs/:
+	mkdir logs/
 
 libintercept.so: chrome_intercept.cc experiment/cpu_utils.* experiment/experimenter.*
 	clang++ -g -shared -fPIC -ldl -lg3logger -o libintercept.so chrome_intercept.cc experiment/cpu_utils.cc experiment/experimenter.cc
