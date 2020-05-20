@@ -1,2 +1,4 @@
 *.so
 *.out
+.*.un~
+experiment/NanoLog
