@@ -1,0 +1,51 @@
+A good reference: https://blog.keyidentity.com/2017/07/25/pwnadventure3-hooking-shared-library/
+
+Things I've learned:
+- Using the simple LD_PRELOAD trick you can interpose:
+	: Library calls (in the main executable and in any libraries)
+	: A public call within the main executable
+	: to properly interpose you need to: define a function pointer that can take an additional Object* this pointer at the beginning and call it as fcn_ptr(this,...)
+- You cannot, however, interpose:
+	: A private method call (because a private symbol will not marked as a dynamic symbol, since it can't be used in the main executable)
+	: A call from within the library, because the compiler prefers the library version (uses relative addressing rather than plt), this is what a private method call is
+
+To Do:
+(Higher is sooner)
+- Interpose remaining web performance methods
+- Implement data collection/processing (the goal is to find out where chrome is spending its time)
+- Automatic interposition code generation (*)
+- Integration of ^^^ with Coz/Coz+ to create fully automatic interposition (*)
+(*) these may not be feasible
+
+=====================
+Explanation of Files:
+=====================
+	compile.sh, run.sh and test.sh compile, run the interposition tests and run the chrome interposition code, respectively
+		: compile.sh can be run with the 'all' flag to compile the test interposition
+		: otherwise it will only compile the necessary chrome interposition library
+		: this is just to make things a little faster
+		: only test.sh is necessary for chrome interposition
+
+	HelloPrinter.cc and .h are the liboriginal.so source
+
+	main.cc is the main program that whose calls that will be interposed (i.e. the interposee)
+		: main.cc compiles to prog.out (i.e. using LD_PRELOAD will cause hello_intercept methods to be used)
+	
+	hello_intercept.cc is the code to interpose liboriginal calls (and other library calls if desired) it produces intercept.so
+		: this version just prints saying that it interposed on the public method
+		: the private method, for reasons mentioned above, does not get interposed
+		: the counters are incremented by the original methods, and are there just to verify that the objects are still valid
+		: when first trying to interpose chrome, printing access members caused segfaults, so these were added to help debug/verify the results of interposition
+
+	chrome_intercept.cc is the interposition library for chrome, and produces intercept-chrome.so
+		: so far, only a few methods have been interposed, but more will be added
+		: the function now is primarily collecting call #'s and average run times
+		: NOTE: I try getting the pid of the current process running the function, but it always returns 1... not sure why that is
+
+	web-performance-symbols.txt are the mangled names of the web performance API functions I'm initially investigating
+
+	cpu_utils.h contains some convenience functions for setting the core configuration of the current process
+		: I've tried my best to modify it to work on both the XU3 and this RockPro, but I haven't fully tested it
+		: I think a good starting point would be to make a test program and verify that migration is occuring
+		: We just used top to verify this on the XU3 but I think it might be worth finding a way to determine programmatically where a process is
+		: and I remember somehow scraping the /proc/PID/status for the allowed list of CPUS, maybe that is a good place to start for that
