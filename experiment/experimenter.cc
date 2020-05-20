@@ -45,13 +45,13 @@ std::string mask_to_str(cpu_set_t mask) {
 void experiment_init() {
     char* env_log = getenv("LOG_FILE");
     if(env_log == NULL) {
-        fprintf(stderr,"Error: no LOG_FILE defined");
+        fprintf(stderr,"Error: no LOG_FILE defined\n");
         exit(1);
     }
 
     char* env_config = getenv("CORE_CONFIG");
     if(env_config == NULL) {
-        fprintf(stderr,"Error: no CORE_CONFIG defined");
+        fprintf(stderr,"Error: no CORE_CONFIG defined\n");
         exit(1);
     }
     experiment_set_config(env_config);
