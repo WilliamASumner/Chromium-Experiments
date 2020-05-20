@@ -13,3 +13,4 @@ experiment/NanoLog/libnanolog.so:
 
 clean:
 	-@rm *.so *.out 2>/dev/null || true
+	-@rm experiment/NanoLog/*.so *.so 2>/dev/null || true
