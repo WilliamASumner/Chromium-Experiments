@@ -1,15 +1,22 @@
 # Chrome Interposition Experiments
+## Project Overview
+The goal of this project is to increase the energy efficiency of mobile page loads on heterogeneous platforms. We seek to interpose important functions in Chromium so that we can see the behavior of the system, adapt it to see the effect of certain core-configurations on performance/energy usage and ultimately develop a better method of assigning core configurations.
+
 ## What this repo is
 - A way of keeping track of what we've tried
 - A useful set of tools for running experiments that run by interposing important Chromium functions
-## Prequisites
+
+## Prerequisites
 Things you'll need to run these experiments:
 - A Linux machine
 - `make`
 - ccurtsinger's [interposing header](https://github.com/ccurtsinger/interpose)
 - The [g3log](https://github.com/KjellKod/g3log) logger for data collection
-Things that will make your life easier:
+
+### Things that will make your life easier
 - A checked out chromium repo, see the [instructions](https://chromium.googlesource.com/chromium/src/+/master/docs/linux/build_instructions.md). This will help in creating the proper mangled symbols
+- `nm` for reading the dynamic symbols in a binary
+- Zack's [guide](https://docs.google.com/document/d/1TVIYvACQTvLrhdRw6EelifGGxvcSxwn_mU4oUGVymFE/edit) for cross-compiling to ARM
 
 ### g3log Installation
 To install g3log for use with this project, here's a quick intro.
@@ -35,7 +42,7 @@ After that, using g3log in a project should be as easy as `#include`ing the righ
     - `mapping.sh`: A script for recording memory mappings of loaded libraries
 - `misc`
     - `example`: Simple interposition example illustrating how interposing works
-    - `odroid-port`: Old odroid scripts that are being ported for this project
+    - `odroid-port`: Old Odroid scripts that are being ported for this project
     - `thoughts.txt`: Collection of my thoughts as I've been working on this project
     - `web-performace-syms.txt`: Mangled symbols of potential interest
 - `permutate.sh`: Script that generates core-configuration permutations for running experiments over a bunch of trials
@@ -49,7 +56,7 @@ These phases can happen out of this order in some cases, but this is the general
 2. Parsing CSS
 3. Layout
 4. Paint
-5. Javacript
+5. JavaScript
 
 ## Currently Interposed Functions
 
@@ -61,10 +68,11 @@ blink::CSSParser::ParseSheet| CSS
 blink::Document::UpdateStyleAndLayout| CSS
 blink::LocalFrameView::PerformLayout | Layout
 blink::LocalFrameView::UpdateLifecyclePhasesInternal | Paint
-blink::ScriptController::EvaluateScriptInMainWorld | Javascript
-blink::ScriptController::EvaluateScriptInIsolatedWorld | Javascript
-blink::v8ScriptRunner::CallFunction | Javascript
+blink::ScriptController::EvaluateScriptInMainWorld | JavaScript
+blink::ScriptController::EvaluateScriptInIsolatedWorld | JavaScript
+blink::v8ScriptRunner::CallFunction | JavaScript
 ---
+
 ## Interposition
 To implement interposition, we use the `LD_PRELOAD` trick. The idea is to get create a shared library whose function signatures match the desired interposition targets exactly, so that when `ld` looks for a dynamic function, your function gets loaded first. To call the original function as if nothing has happened, you can get a handle by using `dlsym(RTLD_NEXT,"name_as_in_binary"` You can learn more [here](www.goldsborough.me/c/low-level/kernel/2016/08/29/16-48-53-the_-ld_preload-_trick/). It is important to note that for C++ interposition special attention to generate the exact same mangled needs to be given, and unless your interposing a method declared as `static`, you will need to explicitly pass the `this` parameter so that the original method can access its own data.
 
