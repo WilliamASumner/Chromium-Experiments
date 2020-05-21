@@ -11,6 +11,20 @@ Things you'll need to run these experiments:
 Things that will make your life easier:
 - A checked out chromium repo, see the [instructions](https://chromium.googlesource.com/chromium/src/+/master/docs/linux/build_instructions.md). This will help in creating the proper mangled symbols
 
+### g3log Installation
+To install g3log for use with this project, here's a quick intro.
+Start off by cloning [g3log](https://github.com/KjellKod/g3log) and then running the following commands:
+```
+cd g3log
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
+
+After that, using g3log in a project should be as easy as `#include`ing the right files and linking with `-lg3logger`. I'm not sure this is the proper way to do things since there was no mention of this in the repo, but it worked for this project.
+
 ## Explanation of files
 - `chrome_intercept.cc`: Interposing functions, see the [table](https://github.com/WilliamASumner/Chromium-Experiments#interposed-functions) below
 - `chrome_includes/v8`: Includes for datatypes in v8, needed for interposing some v8 functions
@@ -56,11 +70,7 @@ To implement interposition, we use the `LD_PRELOAD` trick. The idea is to get cr
 
 ---
 ## Running
-```
-make
-./run.sh
-```
-or
+To run this file, it's as easy as:
 ```
 make run
 ```
