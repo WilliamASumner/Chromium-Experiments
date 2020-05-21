@@ -7,7 +7,7 @@ The goal of this project is to increase the energy efficiency of mobile page loa
 - A useful set of tools for running experiments that run by interposing important Chromium functions
 
 ## Prerequisites
-Things you'll need to run these experiments:
+### Things you'll need to run these experiments
 - A Linux machine
 - `make`
 - ccurtsinger's [interposing header](https://github.com/ccurtsinger/interpose)
