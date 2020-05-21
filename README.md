@@ -74,7 +74,7 @@ blink::v8ScriptRunner::CallFunction | JavaScript
 ---
 
 ## Interposition
-To implement interposition, we use the [`LD_PRELOAD`](http://www.goldsborough.me/c/low-level/kernel/2016/08/29/16-48-53-the_-ld_preload-_trick/) trick. The idea is to get create a shared library whose function signatures match the desired interposition targets exactly, so that when `ld` looks for a dynamic function, your function gets loaded first. To call the original function as if nothing has happened, you can get a handle by using `dlsym(RTLD_NEXT,"binary_function_name")`. _It is important to note that for C++ interposition special attention to generate the exact same mangled needs to be given, and unless your interposing a method declared as `static`, you will need to explicitly pass the `this` parameter so that the original method can access its own data._
+To implement interposition, we use the [`LD_PRELOAD`](http://www.goldsborough.me/c/low-level/kernel/2016/08/29/16-48-53-the_-ld_preload-_trick/) trick. The idea is to get create a shared library whose function signatures match the desired interposition targets exactly, so that when `ld` looks for a dynamic function, your function gets loaded first. To call the original function as if nothing has happened, you can get a handle by using `dlsym(RTLD_NEXT,"binary_function_name")`. **It is important to note that for C++ functions the exact signature of the target needs to be replicated including namespace and arguments. This is due to [name mangling](https://en.wikipedia.org/wiki/Name_mangling). C++ methods also require an explicit `this` argument to the original handle, unless you're interposing a method declared as `static`. See `chrome\_intercept.cc` for examples of this.**
 
 ---
 ## Running
@@ -82,16 +82,19 @@ To run this file, it's as easy as:
 ```
 make run
 ```
+This will run `permutate.sh` with some default arguments. To run with custom settings, see `Makefile` for usage or [More help](#More-help). 
 
 ## Changing log output
 Use: `make run PERM_PREFIX=YOUR_PREFIX` to change the prefix for the log files
 
 ## More help
+For usage:
 ```
 ./run.sh -h
-```
-or
-```
 ./permutate.sh -h
+```
+A simple example of interpostion:
+```
+example/
 ```
 
