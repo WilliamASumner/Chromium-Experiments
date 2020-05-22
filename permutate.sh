@@ -28,7 +28,7 @@ gen_iterconfig() { # generate a permutation of the configs
     iterconfig=()
     while [[ "${#iterconfig[@]}" != "${#configs[@]}" ]]
     do
-        x=$( echo "$RANDOM % 7" | bc )
+        x=$( echo "$RANDOM % ${#configs[@]}" | bc )
         array_contains iterconfig ${configs["$x"]}
         while [ $? -eq 0 ]; do
             x=$( echo "$RANDOM % ${#configs[@]}" | bc )
@@ -40,17 +40,45 @@ gen_iterconfig() { # generate a permutation of the configs
 
 gen_itergovernor() { # generate a permutation of the governors
     itergovernor=()
-    for (( i=1; i <= 4; i++ ))
+    while [[ "${#itergovernor[@]}" != "${#governors[@]}" ]]
     do
-        x=$( echo "$RANDOM % 4" | bc )
+        x=$( echo "$RANDOM % ${#governors[@]}" | bc )
         array_contains itergovernor ${governors["$x"]}
         while [ $? -eq 0 ]; do
-            x=$( echo "$RANDOM % 4" | bc )
+            x=$( echo "$RANDOM % ${#governors[@]}" | bc )
             array_contains itergovernor ${governors["$x"]}
         done
         itergovernor=("${itergovernor[@]}" ${governors["$x"]})
     done
 }
+
+gen_itersite() { # generate a permutation of websites
+    itersite=()
+    while [[ "${#itersite[@]}" != "${#sites[@]}" ]]
+    do
+        x=$( echo "$RANDOM % ${#sites[@]}" | bc )
+        array_contains itersite ${sites["$x"]}
+        while [ $? -eq 0 ]; do
+            x=$( echo "$RANDOM % ${#sites[@]}" | bc )
+            array_contains itersite ${sites["$x"]}
+        done
+        itersite=("${itersite[@]}" ${sites["$x"]})
+    done
+}
+
+expand_FLAGS_and_FP() {
+    echo $SITENAME
+    FLAGS=${FLAGS//'+config'/"$config"}
+    FLAGS=${FLAGS//'+site'/"$SITENAME"}
+    FLAGS=${FLAGS//'+iter'/"$iter"}
+    FLAGS=${FLAGS//'+gov'/"$gov"}
+
+    FILE_PREFIX_P=${FILE_PREFIX//'+config'/"$config"}
+    FILE_PREFIX_P=${FILE_PREFIX_P//'+site'/"$SITENAME"}
+    FILE_PREFIX_P=${FILE_PREFIX_P//'+iter'/"$iter"}
+    FILE_PREFIX_P=${FILE_PREFIX_P//'+gov'/"$gov"}
+}
+
 
 
 echo_usage() {
@@ -60,7 +88,7 @@ echo_usage() {
     echo "-i : Iterations, number of iterations to run"
     echo "-c : Command,    command to be run on each permutation"
     echo "-f : Flags,      flags to be run with the given command"
-    echo "Predefined values: #site = website, #gov = freq gov, #iter = iteration, #config = core configuration"
+    echo "Predefined values: +site = website, +gov = freq gov, +iter = iteration, +config = core configuration"
     exit 0
 }
 
@@ -113,6 +141,7 @@ while getopts ":hp:i:c:f:" opt; do
     esac
 done
 
+
 for (( iter=1; iter <=$ITERATIONS; iter++ )); do
     echo "iteration $iter"
 
@@ -124,20 +153,23 @@ for (( iter=1; iter <=$ITERATIONS; iter++ )); do
 #   for gov in "ii"; do #${itergovernor[@]}; do  # for each governor, configs could be looped through first,
         gen_iterconfig
         for config in ${iterconfig[@]}; do
-            for site in ${sites[@]}; do
+            gen_itersite
+            for site in ${itersite[@]}; do
                 ID=`mktemp -u XXXXXXXX` # unique experiment id
-                export CORE_CONFIG=$config
-                export LOG_FILE="$FILE_PREFIX-$ID"
-                FLAGS=${FLAGS//'#config'/"$config"}
-                FLAGS=${FLAGS//'#site'/"$site"}
-                FLAGS=${FLAGS//'#iter'/"$iter"}
-                FLAGS=${FLAGS//'#gov'/"$gov"}
-                echo "on permutation CORE_CONFIG=$config LOG_FILE=$FILE_PREFIX-$ID"
+                SITENAME="${site%.*}" # remove ".com", ".edu" etc
+                SITENAME="${SITENAME#*www.}" # remove "http://www."
+
+                expand_FLAGS_and_FP # expand embedded variables
+
+                echo "on permutation CORE_CONFIG=$config LOG_FILE=$FILE_PREFIX_P-$ID"
                 echo "'$COMMAND' $FLAGS"
+
                 #export GOVERNOR=$gov # not needed right now
+                export CORE_CONFIG=$config
+                export LOG_FILE="$FILE_PREFIX_P-$ID"
                 $COMMAND "$FLAGS"
-                #./run.sh $config $FILE_PREFIX $site
                 RETVAL=$?
+
                 if [[ "$RETVAL" == "1" ]]; then # script didn't like something...
                     echo "script exited with an error, see above output"
                     exit
