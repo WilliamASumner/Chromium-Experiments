@@ -17,7 +17,7 @@ echo_usage() {
     echo "-v : verbose,   output commands run"
     echo "-b : Binary,    changes binary to specified file. Default is 'chrome'"
     echo "-d : Dir,       changes directory where specified binary is located"
-    echo "-l : Ldpreload, changes LD_PRELOAD value. No value unsets LD_PRELOAD. Default is './libintercept.so'"
+    echo "-l : Ldpreload, changes LD_PRELOAD value. 'None' unsets LD_PRELOAD. Default is './libintercept.so'"
     echo "-w : Webpage,   changes default page to be loaded. Default is 'cnn.com'"
     echo "-f : Flags,     changes Chromium flags. Default is '--no-zyogote --no-sandbox'"
     exit 0
