@@ -53,7 +53,7 @@ while getopts ":hpgvb:d:l:w:f:" opt; do
             ;;
 
         l)
-            if [[ "$f" == "None" ]]; then
+            if [[ "$OPTARG" == "None" ]]; then
                 echo "Received 'None' for option '-l', unsetting LD_PRELOAD"
                 unset LD_PRELOAD_VAL
                 unset LD_PRELOAD
