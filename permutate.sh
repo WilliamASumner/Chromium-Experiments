@@ -89,6 +89,7 @@ echo_usage() {
     echo "-c : Command,    command to be run on each permutation"
     echo "-f : Flags,      flags to be run with the given command"
     echo "Predefined values: +site = website, +gov = freq gov, +iter = iteration, +config = core configuration"
+    echo "Note: the site keyword returns a trimmed value: 'http://www.example.com' -> 'example' for compactness"
     exit 0
 }
 
