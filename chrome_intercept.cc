@@ -18,7 +18,7 @@ typedef int  (*libc_main_fcn)(main_fcn,int,char**,void (*)(void), void(*)(void),
 typedef void (*exit_fcn)(int);
 
 thread_local main_fcn orig_main;
-int pgrp = 0;
+//int pgrp = 0;
 
 int my_main(int argc, char **argv, char **env) {
 
@@ -27,10 +27,10 @@ int my_main(int argc, char **argv, char **env) {
            experiment_init(argv[0]); // set up logger, register handlers
        } else if (strncmp(argv[1],"--no-zygote",12) == 0) { // initial process
            experiment_start_timer(); // just start a timer
-           pgrp = getpgrp(); // get the process group so we can kill all spawned processes later
+           //pgrp = getpgrp(); // get the process group so we can kill all spawned processes later
        }
    }
-   fprintf(stderr,"\n\n\nProcess: %s has pgrp: %d and pid: %d\n\n\n",argv[1],getpgrp(),getpid());
+   //fprintf(stderr,"\n\n\nProcess: %s has pgrp: %d and pid: %d\n\n\n",argv[1],getpgrp(),getpid());
 
    int result = orig_main(argc,argv,env);
    return result;
