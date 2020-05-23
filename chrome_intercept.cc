@@ -7,7 +7,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
-#include <sys/syscall.h> // get tid
 
 #include "chrome_includes/v8/v8.h" // v8 stuff
 
@@ -77,7 +76,6 @@ namespace blink {
     typedef void (*pump_pend_ptr)(HTMLDocumentParser*); // requires the "this" at least
 
     void HTMLDocumentParser::PumpPendingSpeculations() {
-        unsigned long tid = syscall(SYS_gettid);
 
         pump_pend_ptr real_fcn =
             (pump_pend_ptr)dlsym(RTLD_NEXT,
@@ -96,7 +94,6 @@ namespace blink {
     typedef void (*resume_parse_ptr)(HTMLDocumentParser*); // requires the "this" at least
 
     void HTMLDocumentParser::ResumeParsingAfterYield() {
-        unsigned long tid = syscall(SYS_gettid);
         resume_parse_ptr real_fcn =
             (resume_parse_ptr)dlsym(RTLD_NEXT,"_ZN5blink18HTMLDocumentParser23ResumeParsingAfterYieldEv"); // use mangled name
         if (real_fcn == NULL) {
@@ -141,7 +138,6 @@ namespace blink {
             const WTF::String& text,
             CSSDeferPropertyParsing defer_property_parsing,
             bool allow_import_rules) {
-        unsigned long tid = syscall(SYS_gettid);
 
 
         parse_sheet_ptr real_fcn =
@@ -169,7 +165,6 @@ namespace blink {
 
 
     void Document::UpdateStyleAndLayoutTree() {
-        unsigned long tid = syscall(SYS_gettid);
 
         update_style_ptr real_fcn =
             (update_style_ptr)dlsym(RTLD_NEXT,
@@ -243,7 +238,6 @@ namespace blink {
 
     void LocalFrameView::UpdateLifecyclePhasesInternal(
             DocumentLifecycle::LifecycleState target_state) {
-        unsigned long tid = syscall(SYS_gettid);
 
         update_lifecycle_ptr real_fcn =
             (update_lifecycle_ptr)dlsym(RTLD_NEXT,
@@ -264,7 +258,6 @@ namespace blink {
             LocalFrameView*,
             bool);
     void LocalFrameView::PerformLayout(bool in_subtree_layout) {
-        unsigned long tid = syscall(SYS_gettid);
 
         perform_layout_ptr real_fcn =
             (perform_layout_ptr)dlsym(RTLD_NEXT,
@@ -314,7 +307,6 @@ namespace blink {
             const KURL& base_url,
             SanitizeScriptErrors sanitize_script_errors,
             const ScriptFetchOptions& fetch_options){
-        unsigned long tid = syscall(SYS_gettid);
 
 
         execute_script_ptr real_fcn =
@@ -348,7 +340,6 @@ namespace blink {
             const ScriptSourceCode& source,
             const KURL& base_url,
             SanitizeScriptErrors sanitize_script_errors) {
-        unsigned long tid = syscall(SYS_gettid);
 
         execute_script_isl_ptr real_fcn =
             (execute_script_isl_ptr)dlsym(RTLD_NEXT,
@@ -394,8 +385,6 @@ namespace blink {
             int argc,
             v8::Local<v8::Value> args[],
             v8::Isolate* isolate) {
-        unsigned long tid = syscall(SYS_gettid);
-
 
         script_runner_ptr real_fcn =
             (script_runner_ptr)dlsym(RTLD_NEXT,
@@ -413,5 +402,3 @@ namespace blink {
     }
 
 }
-
-
