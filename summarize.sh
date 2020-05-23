@@ -12,7 +12,8 @@ for file in `ls -1`; do
         continue
     fi
     # Generate function latency list
-    cat $file | tail +4 | awk '{ if (NF == 9) print $7"\t"$9 }' >> $FUNC_LOG
+    cat $file | tail +4 | awk '{ if (NF == 9  && $4="INFO") print $7"\t"$9 }' >> $FUNC_LOG
+    cat $file | tail +4 | awk '{ if (NF == 8  && $4="INFO") print $7"\t"$8 }' >> $FUNC_LOG
 done
 
 cat $FUNC_LOG | sort | uniq > $SUMMARY_LOG
