@@ -1,0 +1,11 @@
+GroupBy(Function)              median(Latency(ms))  mean(Latency(ms))  q1(Latency(ms))  q3(Latency(ms))  count(Latency(ms))
+CallFunction                   0.208942             9.2114812691343    0.106625         1.55327          1594
+ExecuteScriptInIsolatedWorld   3.73308              18.798591          1.0243625        19.07215         28
+ExecuteScriptInMainWorld       10.0852              42.218442829787    2.0750575        25.110425        94
+PageLoadTime                   6230.75              5956.2621428571    936.8035         9809.84          7
+ParseSheet                     0.9525915            62.874475578684    0.373826         35.564475        38
+PerformLayout                  2.859235             25.401455625       1.7600325        5.8701125        72
+PumpPendingSpeculations        3.933965             47.392420384615    0.34775975       30.722625        26
+ResumeParsingAfterYield        4.03329              48.7848872         0.375134         35.9276          25
+UpdateLifeCyclePhasesInternal  74.2241              141.45107789474    24.109175        143.21           19
+UpdateStyleAndLayoutTree       0.009953515          5.2232433764774    0.0079049875     0.01714525       1462

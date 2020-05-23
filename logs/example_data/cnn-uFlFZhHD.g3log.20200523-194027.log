@@ -1,0 +1,107 @@
+		g3log created log at: Sat May 23 19:40:34 2020
+		LOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] messagen
+		(uuu*: microseconds fractions of the seconds value)
+
+2020/05/23 19:40:34 223937	INFO [experimenter.cc->experiment_mark_page_loaded:160]	8899:	PageLoadTime	6665.08
+2020/05/23 19:40:45 083136	INFO [experimenter.cc->experiment_fentry:172]	8899:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:40:45 084732	INFO [experimenter.cc->experiment_fentry:172]	8899:	ParseSheet	11110000
+2020/05/23 19:40:45 123129	INFO [experimenter.cc->experiment_fexit:187]	8899:	ParseSheet	11111111	38.3142
+2020/05/23 19:40:45 124698	INFO [experimenter.cc->experiment_fentry:172]	8899:	ParseSheet	11110000
+2020/05/23 19:40:45 125737	INFO [experimenter.cc->experiment_fexit:187]	8899:	ParseSheet	11111111	0.983454
+2020/05/23 19:40:45 149141	INFO [experimenter.cc->experiment_fexit:187]	8899:	UpdateStyleAndLayoutTree	11111111	24.3673
+2020/05/23 19:40:45 164115	INFO [experimenter.cc->experiment_fentry:172]	8899:	ResumeParsingAfterYield	11110000
+2020/05/23 19:40:45 164164	INFO [experimenter.cc->experiment_fentry:172]	8899:	PumpPendingSpeculations	11110000
+2020/05/23 19:40:45 191611	INFO [experimenter.cc->experiment_fentry:172]	8899:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:40:45 245797	INFO [experimenter.cc->experiment_fexit:187]	8899:	ExecuteScriptInIsolatedWorld	11111111	54.0977
+2020/05/23 19:40:45 245850	INFO [experimenter.cc->experiment_fentry:172]	8899:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:40:45 246885	INFO [experimenter.cc->experiment_fexit:187]	8899:	ExecuteScriptInIsolatedWorld	11111111	1.00367
+2020/05/23 19:40:45 246924	INFO [experimenter.cc->experiment_fentry:172]	8899:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:40:45 247965	INFO [experimenter.cc->experiment_fexit:187]	8899:	ExecuteScriptInIsolatedWorld	11111111	1.00094
+2020/05/23 19:40:45 248010	INFO [experimenter.cc->experiment_fentry:172]	8899:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:40:45 275308	INFO [experimenter.cc->experiment_fentry:172]	8899:	ExecuteScriptInMainWorld	11110000
+2020/05/23 19:40:45 291529	INFO [experimenter.cc->experiment_fexit:187]	8899:	ExecuteScriptInMainWorld	11111111	16.1515
+2020/05/23 19:40:45 292235	INFO [experimenter.cc->experiment_fexit:187]	8899:	ExecuteScriptInIsolatedWorld	11111111	16.8805
+2020/05/23 19:40:45 293228	INFO [experimenter.cc->experiment_fentry:172]	8899:	ExecuteScriptInMainWorld	11110000
+2020/05/23 19:40:45 305230	INFO [experimenter.cc->experiment_fexit:187]	8899:	ExecuteScriptInMainWorld	11111111	11.9339
+2020/05/23 19:40:45 307512	INFO [experimenter.cc->experiment_fentry:172]	8899:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:40:45 307951	INFO [experimenter.cc->experiment_fexit:187]	8899:	UpdateStyleAndLayoutTree	11111111	0.38932
+2020/05/23 19:40:45 311537	INFO [experimenter.cc->experiment_fexit:187]	8899:	PumpPendingSpeculations	11111111	3.96264
+2020/05/23 19:40:45 311580	INFO [experimenter.cc->experiment_fexit:187]	8899:	ResumeParsingAfterYield	11111111	4.03329
+2020/05/23 19:40:45 316273	INFO [experimenter.cc->experiment_fentry:172]	8899:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:40:45 320112	INFO [experimenter.cc->experiment_fexit:187]	8899:	ExecuteScriptInIsolatedWorld	11111111	3.76777
+2020/05/23 19:40:45 323845	INFO [experimenter.cc->experiment_fentry:172]	8899:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:40:45 323937	INFO [experimenter.cc->experiment_fexit:187]	8899:	UpdateStyleAndLayoutTree	11111111	0.031679
+2020/05/23 19:40:45 324062	INFO [experimenter.cc->experiment_fentry:172]	8899:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:40:45 324122	INFO [experimenter.cc->experiment_fexit:187]	8899:	UpdateStyleAndLayoutTree	11111111	0.013546
+2020/05/23 19:40:45 324779	INFO [experimenter.cc->experiment_fentry:172]	8899:	PerformLayout	11110000
+2020/05/23 19:40:45 326066	INFO [experimenter.cc->experiment_fexit:187]	8899:	PerformLayout	11111111	1.21657
+2020/05/23 19:40:45 649213	INFO [experimenter.cc->experiment_fentry:172]	8899:	ParseSheet	11110000
+2020/05/23 19:40:45 995657	INFO [experimenter.cc->experiment_fexit:187]	8899:	ParseSheet	11111111	346.364
+2020/05/23 19:40:45 998282	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:45 999443	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.09647
+2020/05/23 19:40:49 652543	INFO [experimenter.cc->experiment_fentry:172]	8899:	UpdateLifeCyclePhasesInternal	11110000
+2020/05/23 19:40:49 659083	INFO [experimenter.cc->experiment_fentry:172]	8899:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:40:50 284803	INFO [experimenter.cc->experiment_fexit:187]	8899:	UpdateStyleAndLayoutTree	11111111	625.633
+2020/05/23 19:40:50 286233	INFO [experimenter.cc->experiment_fexit:187]	8899:	UpdateLifeCyclePhasesInternal	11111111	627.091
+2020/05/23 19:40:53 034297	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 052560	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	18.1848
+2020/05/23 19:40:53 053582	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 059937	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	6.25009
+2020/05/23 19:40:53 061327	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 062792	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.39606
+2020/05/23 19:40:53 063842	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 064879	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	0.982271
+2020/05/23 19:40:53 065811	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 067096	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.2076
+2020/05/23 19:40:53 068359	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 069429	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.00826
+2020/05/23 19:40:53 070441	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 071394	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	0.904716
+2020/05/23 19:40:53 072128	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 073010	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	0.831769
+2020/05/23 19:40:53 073772	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 074927	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.07888
+2020/05/23 19:40:53 076041	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 077084	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	0.985568
+2020/05/23 19:40:53 078306	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 079326	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	0.969157
+2020/05/23 19:40:53 080139	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 081165	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	0.963105
+2020/05/23 19:40:53 084180	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 086065	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.71406
+2020/05/23 19:40:53 087306	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 088764	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.3742
+2020/05/23 19:40:53 089896	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 091044	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.08135
+2020/05/23 19:40:53 091934	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 093023	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.02152
+2020/05/23 19:40:53 094300	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 095595	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.20833
+2020/05/23 19:40:53 097422	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 098452	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	0.968565
+2020/05/23 19:40:53 099636	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 100953	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.24593
+2020/05/23 19:40:53 101974	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 103325	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.27213
+2020/05/23 19:40:53 104403	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 105423	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	0.969358
+2020/05/23 19:40:53 106364	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 107387	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	0.963397
+2020/05/23 19:40:53 108429	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 109460	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	0.971161
+2020/05/23 19:40:53 111113	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 112312	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.10354
+2020/05/23 19:40:53 113950	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 115581	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.48458
+2020/05/23 19:40:53 117444	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 119219	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.66508
+2020/05/23 19:40:53 120698	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 121909	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.1262
+2020/05/23 19:40:53 123192	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 124475	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.20557
+2020/05/23 19:40:53 125814	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 127091	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.18352
+2020/05/23 19:40:53 128792	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 130029	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.15417
+2020/05/23 19:40:53 131269	INFO [experimenter.cc->experiment_fentry:172]	8899:	CallFunction	11110000
+2020/05/23 19:40:53 132596	INFO [experimenter.cc->experiment_fexit:187]	8899:	CallFunction	11111111	1.23732

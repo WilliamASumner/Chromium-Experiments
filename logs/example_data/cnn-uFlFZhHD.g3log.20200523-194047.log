@@ -1,0 +1,93 @@
+		g3log created log at: Sat May 23 19:40:53 2020
+		LOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] messagen
+		(uuu*: microseconds fractions of the seconds value)
+
+2020/05/23 19:40:53 551942	INFO [experimenter.cc->experiment_mark_page_loaded:160]	8945:	PageLoadTime	6230.75
+2020/05/23 19:40:53 732027	INFO [experimenter.cc->experiment_fentry:172]	8945:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:40:53 733481	INFO [experimenter.cc->experiment_fentry:172]	8945:	ParseSheet	11110000
+2020/05/23 19:40:53 769170	INFO [experimenter.cc->experiment_fexit:187]	8945:	ParseSheet	11111111	35.5978
+2020/05/23 19:40:53 769590	INFO [experimenter.cc->experiment_fentry:172]	8945:	ParseSheet	11110000
+2020/05/23 19:40:53 770560	INFO [experimenter.cc->experiment_fexit:187]	8945:	ParseSheet	11111111	0.921729
+2020/05/23 19:40:53 791741	INFO [experimenter.cc->experiment_fexit:187]	8945:	UpdateStyleAndLayoutTree	11111111	22.0818
+2020/05/23 19:40:53 807932	INFO [experimenter.cc->experiment_fentry:172]	8945:	ResumeParsingAfterYield	11110000
+2020/05/23 19:40:53 807977	INFO [experimenter.cc->experiment_fentry:172]	8945:	PumpPendingSpeculations	11110000
+2020/05/23 19:40:53 829098	INFO [experimenter.cc->experiment_fentry:172]	8945:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:40:53 897025	INFO [experimenter.cc->experiment_fexit:187]	8945:	ExecuteScriptInIsolatedWorld	11111111	67.8497
+2020/05/23 19:40:53 897081	INFO [experimenter.cc->experiment_fentry:172]	8945:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:40:53 898259	INFO [experimenter.cc->experiment_fexit:187]	8945:	ExecuteScriptInIsolatedWorld	11111111	1.13899
+2020/05/23 19:40:53 898307	INFO [experimenter.cc->experiment_fentry:172]	8945:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:40:53 899368	INFO [experimenter.cc->experiment_fexit:187]	8945:	ExecuteScriptInIsolatedWorld	11111111	1.02662
+2020/05/23 19:40:53 899408	INFO [experimenter.cc->experiment_fentry:172]	8945:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:40:53 927554	INFO [experimenter.cc->experiment_fentry:172]	8945:	ExecuteScriptInMainWorld	11110000
+2020/05/23 19:40:53 951503	INFO [experimenter.cc->experiment_fexit:187]	8945:	ExecuteScriptInMainWorld	11111111	23.8547
+2020/05/23 19:40:53 952367	INFO [experimenter.cc->experiment_fexit:187]	8945:	ExecuteScriptInIsolatedWorld	11111111	24.74
+2020/05/23 19:40:53 954687	INFO [experimenter.cc->experiment_fentry:172]	8945:	ExecuteScriptInMainWorld	11110000
+2020/05/23 19:40:53 968556	INFO [experimenter.cc->experiment_fexit:187]	8945:	ExecuteScriptInMainWorld	11111111	13.7967
+2020/05/23 19:40:53 970923	INFO [experimenter.cc->experiment_fentry:172]	8945:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:40:53 971379	INFO [experimenter.cc->experiment_fexit:187]	8945:	UpdateStyleAndLayoutTree	11111111	0.399489
+2020/05/23 19:40:53 974954	INFO [experimenter.cc->experiment_fexit:187]	8945:	PumpPendingSpeculations	11111111	3.96513
+2020/05/23 19:40:53 975002	INFO [experimenter.cc->experiment_fexit:187]	8945:	ResumeParsingAfterYield	11111111	4.03358
+2020/05/23 19:40:53 980216	INFO [experimenter.cc->experiment_fentry:172]	8945:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:40:53 983986	INFO [experimenter.cc->experiment_fexit:187]	8945:	ExecuteScriptInIsolatedWorld	11111111	3.69839
+2020/05/23 19:40:53 999777	INFO [experimenter.cc->experiment_fentry:172]	8945:	ParseSheet	11110000
+2020/05/23 19:40:54 259174	INFO [experimenter.cc->experiment_fexit:187]	8945:	ParseSheet	11111111	259.312
+2020/05/23 19:40:54 261163	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:40:54 262426	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	1.19089
+2020/05/23 19:40:54 275980	INFO [experimenter.cc->experiment_fentry:172]	8945:	ExecuteScriptInMainWorld	11110000
+2020/05/23 19:40:54 294961	INFO [experimenter.cc->experiment_fexit:187]	8945:	ExecuteScriptInMainWorld	11111111	18.9106
+2020/05/23 19:40:54 296321	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:40:54 297007	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	0.610114
+2020/05/23 19:40:54 331175	INFO [experimenter.cc->experiment_fentry:172]	8945:	ExecuteScriptInMainWorld	11110000
+2020/05/23 19:40:54 350702	INFO [experimenter.cc->experiment_fexit:187]	8945:	ExecuteScriptInMainWorld	11111111	19.4541
+2020/05/23 19:40:54 351000	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:40:54 351363	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	0.326001
+2020/05/23 19:40:54 351669	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:40:54 609739	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	258.011
+2020/05/23 19:40:54 876575	INFO [experimenter.cc->experiment_fentry:172]	8945:	ExecuteScriptInMainWorld	11110000
+2020/05/23 19:40:54 884491	INFO [experimenter.cc->experiment_fexit:187]	8945:	ExecuteScriptInMainWorld	11111111	7.83717
+2020/05/23 19:40:54 884870	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:40:54 885189	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	0.252424
+2020/05/23 19:40:54 889094	INFO [experimenter.cc->experiment_fentry:172]	8945:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:40:55 531643	INFO [experimenter.cc->experiment_fexit:187]	8945:	UpdateStyleAndLayoutTree	11111111	642.465
+2020/05/23 19:40:55 531806	INFO [experimenter.cc->experiment_fentry:172]	8945:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:40:55 531867	INFO [experimenter.cc->experiment_fexit:187]	8945:	UpdateStyleAndLayoutTree	11111111	0.017533
+2020/05/23 19:40:55 532367	INFO [experimenter.cc->experiment_fentry:172]	8945:	PerformLayout	11110000
+2020/05/23 19:40:55 533487	INFO [experimenter.cc->experiment_fexit:187]	8945:	PerformLayout	11111111	1.06244
+2020/05/23 19:40:55 538750	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:40:55 548267	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	9.4452
+2020/05/23 19:40:56 527458	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:40:56 534612	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	7.07681
+2020/05/23 19:40:57 498544	INFO [experimenter.cc->experiment_fentry:172]	8945:	UpdateLifeCyclePhasesInternal	11110000
+2020/05/23 19:40:57 505138	INFO [experimenter.cc->experiment_fentry:172]	8945:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:40:57 505253	INFO [experimenter.cc->experiment_fexit:187]	8945:	UpdateStyleAndLayoutTree	11111111	0.039634
+2020/05/23 19:40:57 507548	INFO [experimenter.cc->experiment_fexit:187]	8945:	UpdateLifeCyclePhasesInternal	11111111	2.3012
+2020/05/23 19:40:57 524201	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:40:57 531406	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	7.12795
+2020/05/23 19:40:58 524626	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:40:58 532107	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	7.40988
+2020/05/23 19:40:59 523290	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:40:59 534080	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	10.7198
+2020/05/23 19:41:00 525101	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:00 531745	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	6.56733
+2020/05/23 19:41:01 525972	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:01 532538	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	6.481
+2020/05/23 19:41:02 524617	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:02 531646	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	6.95276
+2020/05/23 19:41:02 791462	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:02 796202	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	4.65944
+2020/05/23 19:41:03 523543	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:03 530651	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	7.04185
+2020/05/23 19:41:04 523329	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:04 530465	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	7.06603
+2020/05/23 19:41:05 523372	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:05 529693	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	6.24842
+2020/05/23 19:41:06 524131	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:06 535913	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	11.7103
+2020/05/23 19:41:07 525322	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:07 535802	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	10.356
+2020/05/23 19:41:07 816582	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:07 823304	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	6.64126
+2020/05/23 19:41:08 523449	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:08 533002	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	9.47538
+2020/05/23 19:41:09 523232	INFO [experimenter.cc->experiment_fentry:172]	8945:	CallFunction	11110000
+2020/05/23 19:41:09 529625	INFO [experimenter.cc->experiment_fexit:187]	8945:	CallFunction	11111111	6.30466

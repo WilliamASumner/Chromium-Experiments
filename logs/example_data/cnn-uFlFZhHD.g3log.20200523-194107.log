@@ -1,0 +1,37 @@
+		g3log created log at: Sat May 23 19:41:08 2020
+		LOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] messagen
+		(uuu*: microseconds fractions of the seconds value)
+
+2020/05/23 19:41:08 281582	INFO [experimenter.cc->experiment_mark_page_loaded:160]	8989:	PageLoadTime	425.998
+2020/05/23 19:41:08 409245	INFO [experimenter.cc->experiment_fentry:172]	8989:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:41:08 411328	INFO [experimenter.cc->experiment_fentry:172]	8989:	ParseSheet	11110000
+2020/05/23 19:41:08 446900	INFO [experimenter.cc->experiment_fexit:187]	8989:	ParseSheet	11111111	35.4645
+2020/05/23 19:41:08 447249	INFO [experimenter.cc->experiment_fentry:172]	8989:	ParseSheet	11110000
+2020/05/23 19:41:08 448125	INFO [experimenter.cc->experiment_fexit:187]	8989:	ParseSheet	11111111	0.831439
+2020/05/23 19:41:08 469101	INFO [experimenter.cc->experiment_fexit:187]	8989:	UpdateStyleAndLayoutTree	11111111	21.785
+2020/05/23 19:41:08 484930	INFO [experimenter.cc->experiment_fentry:172]	8989:	ResumeParsingAfterYield	11110000
+2020/05/23 19:41:08 484973	INFO [experimenter.cc->experiment_fentry:172]	8989:	PumpPendingSpeculations	11110000
+2020/05/23 19:41:08 505632	INFO [experimenter.cc->experiment_fentry:172]	8989:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:41:08 569192	INFO [experimenter.cc->experiment_fexit:187]	8989:	ExecuteScriptInIsolatedWorld	11111111	63.4827
+2020/05/23 19:41:08 569246	INFO [experimenter.cc->experiment_fentry:172]	8989:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:41:08 570390	INFO [experimenter.cc->experiment_fexit:187]	8989:	ExecuteScriptInIsolatedWorld	11111111	1.0939
+2020/05/23 19:41:08 570439	INFO [experimenter.cc->experiment_fentry:172]	8989:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:41:08 571760	INFO [experimenter.cc->experiment_fexit:187]	8989:	ExecuteScriptInIsolatedWorld	11111111	1.17734
+2020/05/23 19:41:08 571824	INFO [experimenter.cc->experiment_fentry:172]	8989:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:41:08 604169	INFO [experimenter.cc->experiment_fentry:172]	8989:	ExecuteScriptInMainWorld	11110000
+2020/05/23 19:41:08 627310	INFO [experimenter.cc->experiment_fexit:187]	8989:	ExecuteScriptInMainWorld	11111111	23.0748
+2020/05/23 19:41:08 628037	INFO [experimenter.cc->experiment_fexit:187]	8989:	ExecuteScriptInIsolatedWorld	11111111	23.815
+2020/05/23 19:41:08 629374	INFO [experimenter.cc->experiment_fentry:172]	8989:	ExecuteScriptInMainWorld	11110000
+2020/05/23 19:41:08 686480	INFO [experimenter.cc->experiment_fexit:187]	8989:	ExecuteScriptInMainWorld	11111111	57.0307
+2020/05/23 19:41:08 688967	INFO [experimenter.cc->experiment_fentry:172]	8989:	UpdateStyleAndLayoutTree	11110000
+2020/05/23 19:41:08 689442	INFO [experimenter.cc->experiment_fexit:187]	8989:	UpdateStyleAndLayoutTree	11111111	0.416932
+2020/05/23 19:41:08 692958	INFO [experimenter.cc->experiment_fexit:187]	8989:	PumpPendingSpeculations	11111111	3.90529
+2020/05/23 19:41:08 693069	INFO [experimenter.cc->experiment_fexit:187]	8989:	ResumeParsingAfterYield	11111111	4.05619
+2020/05/23 19:41:08 705738	INFO [experimenter.cc->experiment_fentry:172]	8989:	ParseSheet	11110000
+2020/05/23 19:41:08 996422	INFO [experimenter.cc->experiment_fexit:187]	8989:	ParseSheet	11111111	290.591
+2020/05/23 19:41:08 999234	INFO [experimenter.cc->experiment_fentry:172]	8989:	CallFunction	11110000
+2020/05/23 19:41:09 000540	INFO [experimenter.cc->experiment_fexit:187]	8989:	CallFunction	11111111	1.11845
+2020/05/23 19:41:09 004809	INFO [experimenter.cc->experiment_fentry:172]	8989:	ExecuteScriptInIsolatedWorld	11110000
+2020/05/23 19:41:09 009290	INFO [experimenter.cc->experiment_fexit:187]	8989:	ExecuteScriptInIsolatedWorld	11111111	4.32234
+2020/05/23 19:41:09 018696	INFO [experimenter.cc->experiment_fentry:172]	8989:	UpdateLifeCyclePhasesInternal	11110000
+2020/05/23 19:41:09 025998	INFO [experimenter.cc->experiment_fentry:172]	8989:	UpdateStyleAndLayoutTree	11110000
