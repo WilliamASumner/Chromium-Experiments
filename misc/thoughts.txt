@@ -49,3 +49,13 @@ Explanation of Files:
 		: I think a good starting point would be to make a test program and verify that migration is occuring
 		: We just used top to verify this on the XU3 but I think it might be worth finding a way to determine programmatically where a process is
 		: and I remember somehow scraping the /proc/PID/status for the allowed list of CPUS, maybe that is a good place to start for that
+
+
+======================
+Pending Ideas (Random)
+======================
+- Page Lifecycle API in chrome
+	: Page state is monitored by the application (in focus, etc.)
+	: Though mobile devices have one active tab at a time, they still have separate render processes for tabs...
+- verbose chromium output
+	: Shows average latencies of certain functions, might give us more insight into how it's actually working
