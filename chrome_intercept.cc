@@ -4,7 +4,9 @@
 #include <stdio.h>
 
 #include <string.h>
+#include <sys/types.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/syscall.h> // get tid
 
 #include "chrome_includes/v8/v8.h" // v8 stuff
@@ -16,6 +18,7 @@ typedef int  (*libc_main_fcn)(main_fcn,int,char**,void (*)(void), void(*)(void),
 typedef void (*exit_fcn)(int);
 
 thread_local main_fcn orig_main;
+int pgrp = 0;
 
 int my_main(int argc, char **argv, char **env) {
 
@@ -24,8 +27,10 @@ int my_main(int argc, char **argv, char **env) {
            experiment_init(argv[0]); // set up logger, register handlers
        } else if (strncmp(argv[1],"--no-zygote",12) == 0) { // initial process
            experiment_start_timer(); // just start a timer
+           pgrp = getpgrp(); // get the process group so we can kill all spawned processes later
        }
    }
+   fprintf(stderr,"\n\n\nProcess: %s has pgrp: %d and pid: %d\n\n\n",argv[1],getpgrp(),getpid());
 
    int result = orig_main(argc,argv,env);
    return result;
@@ -43,29 +48,14 @@ extern "C" int __libc_start_main(main_fcn main, int argc, char **ubp_av, void (*
     return  start_main(my_main,argc,ubp_av,init,fini,rtld_fini,stack_end); // Call real __libc_start_main
 }
 
-/* Because g3log only flushes on crashes, we need to tell it to flush on exit */
-
-/*extern "C" void exit(int status) {
-    exit_fcn orig_exit = (exit_fcn)dlsym(RTLD_NEXT,"exit");
-    if(orig_exit == NULL) {
-        fprintf(stderr,"Error: no exit found\n");
-        exit(1);
-    }
-
-    experiment_stop();
-
-    orig_exit(status);
-}*/
-
+/* Because g3log only flushes on crashes, we need to tell it to flush on exit if a process exits normally */
 extern "C" void _exit(int status) { //like exit but does not call onexit functions
     exit_fcn orig__exit = (exit_fcn)dlsym(RTLD_NEXT,"_exit");
     if(orig__exit == NULL) {
         fprintf(stderr,"Error: no _exit found\n");
         exit(1);
     }
-
     experiment_stop();
-
     orig__exit(status);
 }
 

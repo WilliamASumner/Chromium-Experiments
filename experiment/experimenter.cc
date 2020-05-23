@@ -19,11 +19,19 @@
 const int timeout_s = 45;
 std::mutex mut;
 bool did_start = false;
+static int pgid = 0;
 
 std::unique_ptr<g3::LogWorker> worker = nullptr;
 std::unique_ptr<g3::FileSinkHandle> handle = nullptr;
 
 void sigalrm_handler( int sig) {
+    int result = killpg(pgid,SIGINT);
+    if (result != 0) {
+        fprintf(stderr,"Error killing process group: %d;%d",pgid,result);
+    }
+}
+
+void sigint_handler(int sig) {
     experiment_stop();
 }
 
@@ -59,7 +67,13 @@ std::string mask_to_str(cpu_set_t mask) {
     return result;
 }
 
-// TODO add some sigint handling
+void set_sigint_hndlr() {
+    struct sigaction sact;
+    sigemptyset(&sact.sa_mask);
+    sact.sa_flags = 0;
+    sact.sa_handler = sigint_handler;
+    sigaction(SIGINT, &sact, NULL);
+}
 
 void experiment_start_timer() {
     struct sigaction sact;
@@ -77,6 +91,8 @@ void experiment_init(const char *exec_name) {
         mut.unlock();
         return;
     }
+
+    set_sigint_hndlr();
 
     fprintf(stderr,"Initializing experiment");
 
@@ -115,15 +131,19 @@ void experiment_init(const char *exec_name) {
 }
 
 void experiment_stop() {
-    fprintf(stderr,"\nProgram exceeded %d s limit\n",timeout_s);
-    g3::internal::shutDownLogging();
+    mut.lock();
+    if (did_start) {
+        //fprintf(stderr,"\nProgram exceeded %d s limit\n",timeout_s);
+        g3::internal::shutDownLogging();
+    }
+    mut.unlock();
 }
 
 
 void experiment_fentry(const char* func_name) {
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask = _set_affinity_little();
-    LOG(INFO) << tid << ": Entering function: " << func_name << " mask: " << mask_to_str(mask);
+    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask);
 
     clock_gettime(CLOCK_MONOTONIC,&timeStart);
 }
@@ -135,5 +155,5 @@ void experiment_fexit(const char* func_name) {
 
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask = _set_affinity_all();
-    LOG(INFO) << tid << ": Exiting function: " << func_name << " mask: " << mask_to_str(mask) << " latency: " << latency;
+    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << latency;
 }
