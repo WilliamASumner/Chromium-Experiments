@@ -33,5 +33,5 @@ cp /tmp/$SUMMARY_LOG ./$SUMMARY_LOG
 # Datamash util examples
 # datamash -H -s -g 1 count 2 < logs/summary.log # group function names by num. executions
 # datamash -H -s -g 1 median 2 < logs/summary.log # group function names by median of latencies
-datamash -H -s -g 1 median 2 mean 2 count 2 q1 2 q3 2 < $SUMMARY_LOG > /tmp/$SUMMARY_LOG
+datamash -H -s -g 1 median 2 mean 2 q1 2 q3 2 count 2 < $SUMMARY_LOG > /tmp/$SUMMARY_LOG
 cat /tmp/$SUMMARY_LOG | column -t > ./$SUMMARY_LOG
