@@ -8,22 +8,25 @@ CHROME_DIR=/home/vagrant/chromium/src/out/x64Linux
 WEBPAGE="cnn.com"
 FLAGS="--no-zygote --no-sandbox"
 VERBOSE=0
+CHROME_VERBOSE=0
 
 echo_usage() {
     echo "usage: $0 [-hpgv |-b BIN | -d DIR |-l {LD_PRELOAD_PATH|None} |-w www.example.com |-f 'Flags' ]"
-    echo "-h : Help,      shows this usage message"
-    echo "-p : Pause,     adds a flag to Chromium flags to pause for gdb"
-    echo "-g : Gui,       runs Chromium with a gui rather than Xvfb"
-    echo "-v : verbose,   output commands run"
-    echo "-b : Binary,    changes binary to specified file. Default is 'chrome'"
-    echo "-d : Dir,       changes directory where specified binary is located"
-    echo "-l : Ldpreload, changes LD_PRELOAD value. 'None' unsets LD_PRELOAD. Default is './libintercept.so'"
-    echo "-w : Webpage,   changes default page to be loaded. Default is 'cnn.com'"
-    echo "-f : Flags,     changes Chromium flags. Default is '--no-zyogote --no-sandbox'"
+    echo "-h : help,        shows this usage message"
+    echo "-p : pause,       adds a value to Chromium flags to pause for gdb"
+    echo "-g : gui,         runs Chromium with a gui rather than Xvfb"
+    echo "-v : verbose,     output commands run. Default is off"
+    echo "-i : info,        adds a flag to Chromium flags which increases log verbosity."
+    echo "-b : [binary],    changes binary to specified file. Default is '$BINARY'"
+    echo "-d : [dir],       changes directory where specified binary is located. Default is '$CHROME_DIR'"
+    echo "-l : [ldpreload], changes LD_PRELOAD value. 'None' unsets LD_PRELOAD. Default is '\$PWD/${LD_PRELOAD_VAL##*/}'"
+    echo "-w : [webpage],   changes default page to be loaded. Default is '$WEBPAGE'"
+    echo "-f : [flags],     changes Chromium flags. Default is '$FLAGS'. Prefix your flags with 'clear:' to completely override."
+    echo "                  E.g. 'clear: --no-sandbox' will create the command '$CHROME_DIR/$BINARY --no-sandbox $WEBPAGE'"
     exit 0
 }
 
-while getopts ":hpgvb:d:l:w:f:" opt; do
+while getopts ":hpgvib:d:l:w:f:" opt; do
     case $opt in
         h)
             echo_usage
@@ -38,6 +41,10 @@ while getopts ":hpgvb:d:l:w:f:" opt; do
             ;;
         v)
             VERBOSE=1
+            ;;
+        i)
+            FLAGS="$FLAGS --enable--logging=stderr --v=1"
+            CHROME_VERBOSE=1
             ;;
 
         b)
@@ -60,9 +67,9 @@ while getopts ":hpgvb:d:l:w:f:" opt; do
             elif [ ! -f "$OPTARG" ]; then
                 echo "$0: invalid preload file '$OPTARG' for option '-l'"
                 exit 1
+            else
+                LD_PRELOAD_VAL="$OPTARG"
             fi
-
-            LD_PRELOAD_VAL="$OPTARG"
             ;;
 
         w)
@@ -70,7 +77,11 @@ while getopts ":hpgvb:d:l:w:f:" opt; do
             ;;
 
         f)
-            FLAGS="$OPTARG"
+            if [[ "${OPTARGS%:}" == "clear" ]]; then
+                FLAGS="$OPTARG"
+            else
+                FLAGS="$FLAGS $OPTARG"
+            fi
             ;;
 
         \?) # invalid arg
@@ -111,14 +122,19 @@ elif ! [[ "$XVFB_PID" == "-1" ]]; then
     export DISPLAY=:99
 fi
 
-# Since this affects all commands, export here so we don't affect other apps unintentionally
+if [[ "$VERBOSE" == "1" ]]; then
+    echo "LD_PRELOAD: $LD_PRELOAD_VAL"
+    echo "$CHROME_DIR/$BINARY $FLAGS $WEBPAGE"
+fi
+
+# Since this affects all commands, export here so we don't affect other cmds
 if [ ! -z $LD_PRELOAD_VAL ]; then 
     export LD_PRELOAD=$LD_PRELOAD_VAL
 fi
 
-if [[ "$VERBOSE" == "1" ]]; then
-    echo "LD_PRELOAD: $LD_PRELOAD"
+if [[ "$CHROME_VERBOSE" == "1" ]]; then
+    $CHROME_DIR/$BINARY $FLAGS $WEBPAGE > stdout_log.txt 2> stderr_log.txt
+else
+    $CHROME_DIR/$BINARY $FLAGS $WEBPAGE
 fi
 
-echo "$CHROME_DIR/$BINARY $FLAGS $WEBPAGE"
-$CHROME_DIR/$BINARY $FLAGS $WEBPAGE
