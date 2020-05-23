@@ -117,7 +117,6 @@ void experiment_init(const char *exec_name) {
 void experiment_stop() {
     fprintf(stderr,"\nProgram exceeded %d s limit\n",timeout_s);
     g3::internal::shutDownLogging();
-    exit(0);
 }
 
 

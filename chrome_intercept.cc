@@ -11,8 +11,9 @@
 
 
 /* Chrome Startup to initialize experimentt */
-typedef int (*main_fcn)(int, char**, char**);
-typedef int (*libc_main_fcn)(main_fcn,int,char**,void (*)(void), void(*)(void), void(*)(void),void*);
+typedef int  (*main_fcn)(int, char**, char**);
+typedef int  (*libc_main_fcn)(main_fcn,int,char**,void (*)(void), void(*)(void), void(*)(void),void*);
+typedef void (*exit_fcn)(int);
 
 thread_local main_fcn orig_main;
 
@@ -42,6 +43,31 @@ extern "C" int __libc_start_main(main_fcn main, int argc, char **ubp_av, void (*
     return  start_main(my_main,argc,ubp_av,init,fini,rtld_fini,stack_end); // Call real __libc_start_main
 }
 
+/* Because g3log only flushes on crashes, we need to tell it to flush on exit */
+
+/*extern "C" void exit(int status) {
+    exit_fcn orig_exit = (exit_fcn)dlsym(RTLD_NEXT,"exit");
+    if(orig_exit == NULL) {
+        fprintf(stderr,"Error: no exit found\n");
+        exit(1);
+    }
+
+    experiment_stop();
+
+    orig_exit(status);
+}*/
+
+extern "C" void _exit(int status) { //like exit but does not call onexit functions
+    exit_fcn orig__exit = (exit_fcn)dlsym(RTLD_NEXT,"_exit");
+    if(orig__exit == NULL) {
+        fprintf(stderr,"Error: no _exit found\n");
+        exit(1);
+    }
+
+    experiment_stop();
+
+    orig__exit(status);
+}
 
 /* WTF::String - used a lot in blink */
 namespace WTF {
@@ -397,3 +423,5 @@ namespace blink {
     }
 
 }
+
+
