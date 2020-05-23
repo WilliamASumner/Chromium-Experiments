@@ -17,14 +17,21 @@
 
 
 const int timeout_s = 45;
-std::mutex mut;
-bool did_start = false;
+std::mutex didstart_mut, log_mut, time_mut;
+bool did_start = false, page_loaded = false;
 static int pgid = 0;
 
 std::unique_ptr<g3::LogWorker> worker = nullptr;
 std::unique_ptr<g3::FileSinkHandle> handle = nullptr;
 
+thread_local struct timespec time_start,time_end;
+const unsigned int ns_to_ms = 1000000;
+
+struct timespec page_start, page_end;
+
 void sigalrm_handler( int sig) {
+    experiment_stop();
+
     int result = killpg(pgid,SIGINT);
     if (result != 0) {
         fprintf(stderr,"Error killing process group: %d;%d",pgid,result);
@@ -35,14 +42,6 @@ void sigint_handler(int sig) {
     experiment_stop();
 }
 
-struct config_t {
-    int bigs;
-    int lils;
-};
-
-struct config_t experiment_config;
-thread_local struct timespec timeStart,timeEnd;
-const unsigned int ns_to_ms = 1000000;
 
 void set_config(const char* config) {
     //config is in form '4l-4b'
@@ -82,19 +81,23 @@ void experiment_start_timer() {
     sact.sa_handler = sigalrm_handler;
     sigaction(SIGALRM, &sact, NULL);
 
-    alarm(timeout_s);
+
+    alarm(timeout_s); // start timeout
 }
 
 void experiment_init(const char *exec_name) {
-    mut.lock();
+    didstart_mut.lock();
     if (did_start) {
-        mut.unlock();
+        didstart_mut.unlock();
         return;
     }
 
     set_sigint_hndlr();
 
     fprintf(stderr,"Initializing experiment");
+    time_mut.lock();
+    clock_gettime(CLOCK_MONOTONIC,&page_start);
+    time_mut.unlock();
 
     char* env_log = getenv("LOG_FILE");
     if(env_log == nullptr) {
@@ -127,33 +130,61 @@ void experiment_init(const char *exec_name) {
     g3::initializeLogging(worker.get());
 
     did_start = true; // done initializing, all threads can go now
-    mut.unlock();
+    didstart_mut.unlock();
 }
 
 void experiment_stop() {
-    mut.lock();
+    didstart_mut.lock();
     if (did_start) {
         //fprintf(stderr,"\nProgram exceeded %d s limit\n",timeout_s);
         g3::internal::shutDownLogging();
     }
-    mut.unlock();
+    didstart_mut.unlock();
+}
+
+// TODO check this, it might be called more than once
+void experiment_mark_page_start() {
+    clock_gettime(CLOCK_MONOTONIC,&page_start);
+}
+
+void experiment_mark_page_loaded() {
+    if (!page_loaded) {
+        clock_gettime(CLOCK_MONOTONIC,&page_end);
+        time_mut.lock();
+        double page_load = ((double)page_end.tv_sec*1000 + (double)page_end.tv_nsec/ns_to_ms)
+            - ((double)page_start.tv_sec*1000 + (double)page_start.tv_nsec/ns_to_ms);
+        page_loaded = true;
+        time_mut.unlock();
+        unsigned int tid = syscall(SYS_gettid);
+        log_mut.lock();
+        LOG(INFO)<< tid << ":\t" << "PageLoadTime\t" << page_load;
+        log_mut.unlock();
+
+    }
+
 }
 
 
 void experiment_fentry(const char* func_name) {
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask = _set_affinity_little();
+    log_mut.lock();
     LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask);
+    log_mut.unlock();
 
-    clock_gettime(CLOCK_MONOTONIC,&timeStart);
+    clock_gettime(CLOCK_MONOTONIC,&time_start);
 }
 
 void experiment_fexit(const char* func_name) {
-    clock_gettime(CLOCK_MONOTONIC,&timeEnd);
-    double latency = ((double)timeEnd.tv_sec*1000 + (double)timeEnd.tv_nsec/ns_to_ms)
-                        - ((double)timeStart.tv_sec*1000 + (double)timeStart.tv_nsec/ns_to_ms);
+    clock_gettime(CLOCK_MONOTONIC,&time_end);
+    double latency = ((double)time_end.tv_sec*1000 + (double)time_end.tv_nsec/ns_to_ms)
+                        - ((double)time_start.tv_sec*1000 + (double)time_start.tv_nsec/ns_to_ms);
 
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask = _set_affinity_all();
+
+    log_mut.lock();
     LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << latency;
+    log_mut.unlock();
 }
+

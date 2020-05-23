@@ -25,6 +25,7 @@ int my_main(int argc, char **argv, char **env) {
        if (strncmp(argv[1],"--type=renderer",15) == 0) { // renderer process
            experiment_init(argv[0]); // set up logger, register handlers
        } else if (strncmp(argv[1],"--no-zygote",12) == 0) { // initial process
+           experiment_init(argv[0]);
            experiment_start_timer(); // just start a timer
            //pgrp = getpgrp(); // get the process group so we can kill all spawned processes later
        }
@@ -157,8 +158,13 @@ namespace blink {
     }
 
 
+
     class Document {
-        void UpdateStyleAndLayoutTree();
+        public:
+            void UpdateStyleAndLayoutTree();
+
+            enum DocumentReadyState { kLoading, kInteractive, kComplete };
+            void SetReadyState(DocumentReadyState);
     };
 
     typedef void (*update_style_ptr)(Document*); // static func no this
@@ -168,7 +174,7 @@ namespace blink {
 
         update_style_ptr real_fcn =
             (update_style_ptr)dlsym(RTLD_NEXT,
-                    "_ZN5blink8Document24UpdateStyleAndLayoutTreeEv"); // use mangled name
+                    "_ZN5blink8Document24UpdateStyleAndLayoutTreeEv");
         if (real_fcn == NULL) {
             printf("Error finding function 'UpdateStyleAndLayoutTree'\n");
             exit(1);
@@ -179,6 +185,31 @@ namespace blink {
         experiment_fexit("UpdateStyleAndLayoutTree");
     }
 
+    /* This function is purely for monitoring the progress of the page load */
+    typedef void(*update_rdy_ptr)(Document*,Document::DocumentReadyState);
+
+    void Document::SetReadyState(Document::DocumentReadyState ready_state) {
+        update_rdy_ptr real_fcn =
+            (update_rdy_ptr)dlsym(RTLD_NEXT,
+                    "_ZN5blink8Document13SetReadyStateENS0_18DocumentReadyStateE");
+        if (real_fcn == NULL) {
+            printf("Error finding function 'SetReadyState'\n");
+            exit(1);
+        }
+
+        switch(ready_state) {
+            case kInteractive:
+                experiment_mark_page_loaded(); // js now running
+                break;
+            case kLoading:
+                break; // still loading
+            case kComplete:
+                break; // full page load
+            default:
+                break;
+        }
+        real_fcn(this,ready_state);
+    }
 
     /* Paint/Layout Stage */
     class DocumentLifecycle {
