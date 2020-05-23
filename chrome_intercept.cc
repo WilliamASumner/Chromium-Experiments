@@ -17,8 +17,15 @@ typedef int (*libc_main_fcn)(main_fcn,int,char**,void (*)(void), void(*)(void), 
 thread_local main_fcn orig_main;
 
 int my_main(int argc, char **argv, char **env) {
-    //TODO watch out for multiple threads running this... might create weird output
-   experiment_init(argv[0]); // set up logger, etc. Not running this causes a SIGSEV/SIGINT
+
+   if (argv != nullptr && argc > 1 && argv[1] != nullptr) {
+       if (strncmp(argv[1],"--type=renderer",15) == 0) { // renderer process
+           experiment_init(argv[0]); // set up logger, register handlers
+       } else if (strncmp(argv[1],"--no-zygote",12) == 0) { // initial process
+           experiment_start_timer(); // just start a timer
+       }
+   }
+
    int result = orig_main(argc,argv,env);
    return result;
 }
