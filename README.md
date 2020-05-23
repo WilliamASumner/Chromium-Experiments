@@ -47,7 +47,7 @@ After that, using g3log in a project should be as easy as `#include`ing the righ
     - `web-performace-syms.txt`: Mangled symbols of potential interest
 - `permutate.sh`: Script that generates core-configuration permutations for running experiments over a bunch of trials
 - `process.py`: Python script for parsing/analyzing output logs
-- `run.sh`: Bash script for running `chrome` (or `content\_shell`) with some options that help in debugging
+- `run-chrome.sh`: Bash script for running `chrome` (or `content\_shell`) with some options that help in debugging
 
 ### Interposed Functions
 We've tracked down some interesting functions in the main phases of a chrome page load.
@@ -90,7 +90,7 @@ Use: `make run PERM_PREFIX=YOUR_PREFIX` to change the prefix for the log files
 ## More help
 For usage:
 ```
-./run.sh -h
+./run-chrome.sh -h
 ./permutate.sh -h
 ```
 A simple example of interpostion:
