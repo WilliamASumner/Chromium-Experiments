@@ -2,13 +2,17 @@
 
 FUNC_LOG="func_latencies.log"
 SUMMARY_LOG="summary.log"
-
-find logs/ -size 0 | xargs rm || true # remove empty entries, some processes quit before they can log
+EMPTY_FILES=`find logs/ -size 0`
+if [[ "$EMPTY_FILES" != "" ]]; then
+    find logs/ -size 0 | xargs rm || true # remove empty entries, some processes quit before they can log
+fi
 cd logs
 echo -n "" > $FUNC_LOG
 
 for file in `ls -1`; do
     if [[ "$file" == "format.md" ]]; then
+        continue
+    elif [ -d $file ]; then
         continue
     fi
     # Generate function latency list
