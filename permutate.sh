@@ -70,11 +70,13 @@ expand_FLAGS_and_FP() {
     echo $SITENAME
     FLAGS=${FLAGS//'+config'/"$config"}
     FLAGS=${FLAGS//'+site'/"$SITENAME"}
+    FLAGS=${FLAGS//'+url'/"$url"}
     FLAGS=${FLAGS//'+iter'/"$iter"}
     FLAGS=${FLAGS//'+gov'/"$gov"}
 
     FILE_PREFIX_P=${FILE_PREFIX//'+config'/"$config"}
     FILE_PREFIX_P=${FILE_PREFIX_P//'+site'/"$SITENAME"}
+    FILE_PREFIX_P=${FILE_PREFIX_P//'+url'/"$url"}
     FILE_PREFIX_P=${FILE_PREFIX_P//'+iter'/"$iter"}
     FILE_PREFIX_P=${FILE_PREFIX_P//'+gov'/"$gov"}
 }
@@ -88,8 +90,8 @@ echo_usage() {
     echo "-i : Iterations, number of iterations to run"
     echo "-c : Command,    command to be run on each permutation"
     echo "-f : Flags,      flags to be run with the given command"
-    echo "Predefined values: +site = website, +gov = freq gov, +iter = iteration, +config = core configuration"
-    echo "Note: the site keyword returns a trimmed value: 'http://www.example.com' -> 'example' for compactness"
+    echo "Predefined values: +url = url, +site = website, +gov = freq gov, +iter = iteration, +config = core configuration"
+    echo "Note: the sitekeyword returns a trimmed value of the url: 'http://www.example.com' -> 'example' for compactness"
     exit 0
 }
 
@@ -155,9 +157,9 @@ for (( iter=1; iter <=$ITERATIONS; iter++ )); do
         gen_iterconfig
         for config in ${iterconfig[@]}; do
             gen_itersite
-            for site in ${itersite[@]}; do
+            for url in ${itersite[@]}; do
                 ID=`mktemp -u XXXXXXXX` # unique experiment id
-                SITENAME="${site%.*}" # remove ".com", ".edu" etc
+                SITENAME="${url%.*}" # remove ".com", ".edu" etc
                 SITENAME="${SITENAME#*www.}" # remove "http://www."
 
                 expand_FLAGS_and_FP # expand embedded variables
@@ -178,7 +180,7 @@ for (( iter=1; iter <=$ITERATIONS; iter++ )); do
                     echo  "script caught a SIGINT, exiting..."
                     exit
                 fi
-            done # site
+            done # url
         done # config
     #done #gov
 done
