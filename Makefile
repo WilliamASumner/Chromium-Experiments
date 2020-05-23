@@ -5,7 +5,7 @@ PERM_PREFIX:=+site
 default: libintercept.so
 
 run: logs/ libintercept.so
-	./permutate.sh -c './run.sh' -f '-w +url' -p '$(PERM_PREFIX)'
+	./permutate.sh -c './run-chrome.sh' -f '-w +url' -p '$(PERM_PREFIX)'
 
 logs/:
 	mkdir logs/
