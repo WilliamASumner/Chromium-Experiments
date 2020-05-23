@@ -36,7 +36,7 @@ struct config_t experiment_config;
 thread_local struct timespec timeStart,timeEnd;
 const unsigned int ns_to_ms = 1000000;
 
-void experiment_set_config(const char* config) {
+void set_config(const char* config) {
     //config is in form '4l-4b'
     int bigs = config[0] - '0';
     int lils = config[3] - '0';
@@ -59,14 +59,9 @@ std::string mask_to_str(cpu_set_t mask) {
     return result;
 }
 
-void experiment_init(const char *exec_name) {
-    mut.lock();
-    if (did_start) {
-        printf("Already started\n");
-        mut.unlock();
-        return;
-    }
+// TODO add some sigint handling
 
+void experiment_start_timer() {
     struct sigaction sact;
     sigemptyset(&sact.sa_mask);
     sact.sa_flags = 0;
@@ -74,20 +69,29 @@ void experiment_init(const char *exec_name) {
     sigaction(SIGALRM, &sact, NULL);
 
     alarm(timeout_s);
+}
+
+void experiment_init(const char *exec_name) {
+    mut.lock();
+    if (did_start) {
+        mut.unlock();
+        return;
+    }
+
     fprintf(stderr,"Initializing experiment");
 
     char* env_log = getenv("LOG_FILE");
-    if(env_log == NULL) {
+    if(env_log == nullptr) {
         fprintf(stderr,"Error: no LOG_FILE defined\n");
         exit(1);
     }
 
     char* env_config = getenv("CORE_CONFIG");
-    if(env_config == NULL) {
+    if(env_config == nullptr) {
         fprintf(stderr,"Error: no CORE_CONFIG defined\n");
         exit(1);
     }
-    experiment_set_config(env_config);
+    set_config(env_config);
     int size_mb = 2;
 
     std::string logdir = "/home/vagrant/research/interpose/logs/";

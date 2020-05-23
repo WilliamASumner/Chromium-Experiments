@@ -1,5 +1,4 @@
-
-void experiment_set_config(const char* config);
+void experiment_start_timer();
 
 void experiment_init(const char*);
 
