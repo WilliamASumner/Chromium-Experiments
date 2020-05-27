@@ -17,8 +17,8 @@
 
 
 const int timeout_s = 45;
-std::mutex didstart_mut, log_mut, time_mut;
-bool did_start = false, page_loaded = false;
+std::mutex didstart_mut, log_mut, time_mut, config_mut;
+bool did_start = false, page_loaded = false, config_set = false;
 static int pgid = 0;
 
 std::unique_ptr<g3::LogWorker> worker = nullptr;
@@ -28,6 +28,11 @@ thread_local struct timespec time_start,time_end;
 const unsigned int ns_to_ms = 1000000;
 
 struct timespec page_start, page_end;
+
+struct config_t {
+    int nbigs;
+    int nlils;
+} experiment_config;
 
 void sigalrm_handler( int sig) {
     experiment_stop();
@@ -42,7 +47,6 @@ void sigint_handler(int sig) {
     experiment_stop();
 }
 
-
 void set_config(const char* config) {
     //config is in form '4l-4b'
     int bigs = config[0] - '0';
@@ -50,6 +54,13 @@ void set_config(const char* config) {
     if (bigs > 4 || bigs < 0 || lils > 4 || lils < 0) {
         fprintf(stderr,"Error: invalid CORE_CONFIG '%s'",config);
     }
+
+    config_mut.lock();
+    if (!config_set) {
+        experiment_config.nbigs = bigs;
+        experiment_config.nlils = lils;
+    }
+    config_mut.unlock();
 }
 
 //TODO make hex
@@ -163,7 +174,6 @@ void experiment_mark_page_loaded() {
     }
 
 }
-
 
 void experiment_fentry(const char* func_name) {
     unsigned int tid = syscall(SYS_gettid);
