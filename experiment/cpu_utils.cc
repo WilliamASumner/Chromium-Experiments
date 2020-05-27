@@ -29,7 +29,7 @@ cpu_set_t _set_affinity_all(void) {
     return mask;
 }
 
-cpu_set_t _set_affinity_permute(int bigs, int lils, std::mt19937 mt) {
+cpu_set_t _gen_affinity_permute(int bigs, int lils, std::mt19937 mt) {
     static std::uniform_int_distribution<int> dist(0,3);
 
     cpu_set_t mask;
