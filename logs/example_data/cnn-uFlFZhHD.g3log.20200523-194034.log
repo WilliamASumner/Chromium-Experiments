@@ -1,0 +1,5 @@
+		g3log created log at: Sat May 23 19:40:47 2020
+		LOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] messagen
+		(uuu*: microseconds fractions of the seconds value)
+
+2020/05/23 19:40:47 048541	INFO [experimenter.cc->experiment_mark_page_loaded:160]	8929:	PageLoadTime	12954.6

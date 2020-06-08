@@ -1,5 +1,8 @@
 *.so
 *.out
 .*.un~
+stderr_log.txt
+stdout_log.txt
 experiment/NanoLog
 logs/
+tags
