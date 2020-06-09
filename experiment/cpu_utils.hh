@@ -46,4 +46,6 @@ cpu_set_t _set_affinity_big(void);
 cpu_set_t _set_affinity_all(void);
 
 cpu_set_t _set_affinity_permute(int bigs, int lils);
+
+unsigned int _get_curr_cpu();
 #endif

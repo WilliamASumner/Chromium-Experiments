@@ -169,7 +169,7 @@ void experiment_fentry(const char* func_name) {
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask = _set_affinity_little();
     log_mut.lock();
-    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask);
+    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << _get_curr_cpu();
     log_mut.unlock();
 
     clock_gettime(CLOCK_MONOTONIC,&time_start);
@@ -184,7 +184,7 @@ void experiment_fexit(const char* func_name) {
     cpu_set_t mask = _set_affinity_all();
 
     log_mut.lock();
-    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << latency;
+    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << _get_curr_cpu() << "\t" << latency;
     log_mut.unlock();
 }
 
