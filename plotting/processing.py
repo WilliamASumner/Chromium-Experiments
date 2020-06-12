@@ -20,15 +20,18 @@ def process_line(line,verbose=False):
     func = line.pop(0)
 
     mask = line.pop(0)
+
+    core = line.pop(0)
     try:
         test = int(mask)
+        test = int(core)
         if ("." in func or "/" in func or "[" in func or "]" in func):
             raise Exception("Invalid function name: " + func)
     except Exception as e:
         if verbose:
             print(e)
         return [None, 0]
-    return [(ms,tid,func,mask),len(func)]
+    return [(ms,tid,func,mask,core),len(func)]
 
 def gen_data_matrix(trimLatency=False):
     func_name_length = 0
@@ -52,8 +55,10 @@ def gen_data_matrix(trimLatency=False):
                     data_mat.append(line)
                 func_name_length = max(f_len,func_name_length)
 
-    entrytype = np.dtype({'names':['time_ms','tid','func_name','mask'], 'formats':[np.float64,np.uint16,'S'+str(func_name_length),'S8']})
+    entrytype = np.dtype({'names':['time_ms','tid','func_name','mask','core'],
+                         'formats':[np.float64,np.uint16,'S'+str(func_name_length),'S8',np.uint8]})
     data_np = np.array(data_mat,dtype=entrytype)
+    data_np = data_np[data_np['time_ms'].argsort()]
     return data_np
 
 if __name__ == "__main__":
