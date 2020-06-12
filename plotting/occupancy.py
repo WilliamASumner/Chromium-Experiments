@@ -12,15 +12,26 @@ def generate_heatmap(data,x_labels,y_labels,ax=None,
     cbar = ax.figure.colorbar(im, ax=ax,**cbar_kw)
     cbar.ax.set_ylabel(cbarlabel, rotation=-90, va="bottom")
 
-def generate_linechart(data,x_labels,y_labels,ax=None, **kwargs):
+def generate_scatter(x,y,x_labels,y_labels,ax=None, **kwargs):
     if not ax:
         ax = plt.gca()
 
-     p = ax.plot(data,**kwargs)
-     p.set_xlabel(x_labels)
-     p.set_ylabel(y_labels)
+    p = ax.scatter(x,y,**kwargs)
+    ax.set_xlabel(x_labels)
+    ax.set_ylabel(y_labels)
 
-    return im
+    return ax
+
+def generate_lineplot(x,y,x_labels,y_labels,ax=None, **kwargs):
+    if not ax:
+        ax = plt.gca()
+
+    p = ax.scatter(x,y,**kwargs)
+    ax.set_xlabel(x_labels)
+    ax.set_ylabel(y_labels)
+
+    return ax
+
 
 if __name__ == "__main__":
     print("Gathering data...")
@@ -29,10 +40,14 @@ if __name__ == "__main__":
     func_names = np.unique(data['func_name'])
     tids = np.unique(data['tid'])
 
-    for tid in tids:
+    ax = None
+
+    for i,tid in enumerate(tids):
         data_tid = data[data['tid'] == tid]
         data_tid['time_ms'] -= np.min(data['time_ms'])
-        generate_linechart(data_tid['time_ms'],data_tid['core'])
+        ax = generate_lineplot(data_tid['time_ms'],data_tid['core'],'Time(ms)','Core ID',ax=ax,color=tid_cols[i]))
+        ax = generate_scatter(data_tid['time_ms'],data_tid['core'],'Time(ms)','Core ID',ax=ax,marker='o',color=func_calls) # COLOR by function
+    ax.legend(tids)
     plt.show()
 
 
