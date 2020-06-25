@@ -177,9 +177,9 @@ void experiment_mark_page_loaded() {
 
 void experiment_fentry(const char* func_name) {
     unsigned int tid = syscall(SYS_gettid);
-    cpu_set_t mask = _set_affinity_little();
+    cpu_set_t mask = set_affinity_little();
     log_mut.lock();
-    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << _get_curr_cpu();
+    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu();
     log_mut.unlock();
 
     clock_gettime(CLOCK_MONOTONIC,&time_start);
@@ -191,10 +191,10 @@ void experiment_fexit(const char* func_name) {
                         - ((double)time_start.tv_sec*1000 + (double)time_start.tv_nsec/ns_to_ms);
 
     unsigned int tid = syscall(SYS_gettid);
-    cpu_set_t mask = _set_affinity_all();
+    cpu_set_t mask = set_affinity_all();
 
     log_mut.lock();
-    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << _get_curr_cpu() << "\t" << latency;
+    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu() << "\t" << latency;
     log_mut.unlock();
 }
 
