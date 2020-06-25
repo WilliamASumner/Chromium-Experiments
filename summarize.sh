@@ -11,15 +11,16 @@ fi
 cd $LOG_DIR
 echo -n "" > $FUNC_LOG
 
+# Generate function latency list
 for file in `ls -1`; do
-    if [[ "$file" == "format.md" ]]; then
+    if [[ "$file" == "format.md" ]] || [[ "$file" == "$SUMMARY_LOG" ]] || [[ "$file" == "$FUNC_LOG" ]]; then
         continue
     elif [ -d $file ]; then
         continue
     fi
-    # Generate function latency list
-    cat $file | tail +4 | awk '{ if (NF == 9  && $4=="INFO") print $7"\t"$9 }' >> $FUNC_LOG
-    cat $file | tail +4 | awk '{ if (NF == 8  && $4=="INFO" && $7=="PageLoadTime") print $7"\t"$8 }' >> $FUNC_LOG
+
+    cat $file | tail +4 | awk '{ if (NF == 10  && $4=="INFO") print $7"\t"$10 }' >> $FUNC_LOG # latency
+    cat $file | tail +4 | awk '{ if (NF == 8  && $4=="INFO" && $7=="PageLoadTime") print $7"\t"$8 }' >> $FUNC_LOG # page load time
 done
 
 cat $FUNC_LOG | sort | uniq > $SUMMARY_LOG
@@ -37,3 +38,4 @@ cp /tmp/$SUMMARY_LOG ./$SUMMARY_LOG
 # datamash -H -s -g 1 median 2 < logs/summary.log # group function names by median of latencies
 datamash -H -s -g 1 median 2 mean 2 q1 2 q3 2 count 2 min 2 max 2 < $SUMMARY_LOG > /tmp/$SUMMARY_LOG
 cat /tmp/$SUMMARY_LOG | column -t > ./$SUMMARY_LOG
+cp ./$SUMMARY_LOG /tmp/$SUMMARY_LOG
