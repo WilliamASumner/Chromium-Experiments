@@ -59,13 +59,22 @@ extern "C" void _exit(int status) { //like exit but does not call onexit functio
     orig__exit(status);
 }
 
+extern "C" void exit(int status) { //like exit but does not call onexit functions
+    exit_fcn orig_exit = (exit_fcn)dlsym(RTLD_NEXT,"exit");
+    if(orig_exit == NULL) {
+        fprintf(stderr,"Error: no _exit found\n");
+        exit(1);
+    }
+    experiment_stop();
+    orig_exit(status);
+}
+
 /* WTF::String - used a lot in blink */
 namespace WTF {
     class String;
 };
 
 namespace blink {
-
 
     /* HTML Stage */
 
