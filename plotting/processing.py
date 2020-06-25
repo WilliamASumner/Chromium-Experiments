@@ -1,16 +1,24 @@
 #!/usr/local/bin/python3
 from os import getenv
+from glob import glob
 from time import mktime, strptime
 import numpy as np
 
 
 def process_line(line,verbose=False):
-    if (len(line) < 8 or line[6] == "PageLoadTime"):
+    if (len(line) < 8 or len(line) > 10 or line[6] == "PageLoadTime"):
         return [None,0]
+
     date = line.pop(0)
     time = line.pop(0)
     date_str = date + " " + time
-    ms = mktime(strptime(date_str,"%Y/%m/%d %H:%M:%S")) * 1000 + float(line.pop(0))
+
+    try:
+        ms = mktime(strptime(date_str,"%Y/%m/%d %H:%M:%S")) * 1000 + float(line.pop(0))
+    except Exception as e: # unable to parse float means invalid line
+        if verbose:
+            print(e)
+        return [None,0]
 
     line.pop(0) # remove INFO
     line.pop(0) # remove file
@@ -22,6 +30,7 @@ def process_line(line,verbose=False):
     mask = line.pop(0)
 
     core = line.pop(0)
+
     try:
         test = int(mask)
         test = int(core)
@@ -40,7 +49,18 @@ def gen_data_matrix(trimLatency=False):
     if filenames is None:
         raise Exception("DATA_FILES not specified")
 
-    for filename in filenames.split():
+    elif type(filenames) is str and "*" in filenames: # unexpanded glob
+        glob_pattern = filenames
+        filenames = list(glob(glob_pattern))
+
+        if (len(filenames) == 0):
+            raise Exception("DATA_FILES contains empty pattern: " + glob_pattern)
+
+    elif type(filenames) is str:
+        filenames = filenames.split()
+
+    for filename in filenames:
+        print(filename)
         with open(filename) as f:
             for i,line in enumerate(f):
                 if (i < 4): # skip first 4 lines, header info
