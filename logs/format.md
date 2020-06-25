@@ -7,14 +7,14 @@ LOG format: [YYYY/MM/DD hh:mm:ss uuu* LEVEL FILE->FUNCTION:LINE] messagen
 ## Example Output
 A function entry would look like
 ```
-2020/05/23 16:23:21 110646 INFO [experimenter.cc->experiment_fentry:146] 30936: UpdateStyleAndLayoutTree 11110000
-    $1        $2      $3    $4             $5                             $6              $7                $8
+2020/05/23 16:23:21 110646 INFO [experimenter.cc->experiment_fentry:146] 30936: UpdateStyleAndLayoutTree 11110000 2
+    $1        $2      $3    $4             $5                             $6              $7                $8    $9
 ```
 A function exit would look like
 
 ```
-2020/05/23 16:23:21 168378 INFO [experimenter.cc->experiment_fexit:158] 30936: UpdateStyleAndLayoutTree 11111111 21.6936
-    $1        $2      $3    $4                    $5                      $6               $7               $8      $9
+2020/05/23 16:23:21 168378 INFO [experimenter.cc->experiment_fexit:158] 30936: UpdateStyleAndLayoutTree 11111111    3   21.6936
+    $1        $2      $3    $4                    $5                      $6               $7               $8      $9     $10
 ```
 
 There is also a special log that includes PageLoadTime information that looks like this:
@@ -35,4 +35,5 @@ There is also a special log that includes PageLoadTime information that looks li
 |   $6   | TID                        |
 |   $7   | Function                   |
 |   $8   | CPU Mask or PageLoadTime(ms) |
-|   $9   | Latency(ms)                |
+|   $9   | Current CPU Core           |
+|   $10   | Latency(ms)                |
