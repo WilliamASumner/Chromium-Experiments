@@ -39,15 +39,20 @@ if __name__ == "__main__":
     print("Plotting data...")
     func_names = np.unique(data['func_name'])
     tids = np.unique(data['tid'])
+    tid_cols = ['red','blue','green','orange','purple','cyan','yellow']
+    func_cols = ['red','blue','green','orange','purple','cyan','yellow']
 
     ax = None
+    print("TIDS: " + str(tids))
 
     for i,tid in enumerate(tids):
         data_tid = data[data['tid'] == tid]
         data_tid['time_ms'] -= np.min(data['time_ms'])
-        ax = generate_lineplot(data_tid['time_ms'],data_tid['core'],'Time(ms)','Core ID',ax=ax,color=tid_cols[i]))
-        ax = generate_scatter(data_tid['time_ms'],data_tid['core'],'Time(ms)','Core ID',ax=ax,marker='o',color=func_calls) # COLOR by function
-    ax.legend(tids)
+        ax = generate_lineplot(data_tid['time_ms'],data_tid['core'],'Time(ms)','Core ID',ax=ax)#,color=tid_cols[i])
+        ax = generate_scatter(data_tid['time_ms'],data_tid['core'],'Time(ms)','Core ID',ax=ax,marker='o')#,color=func_cols) # COLOR by function
+    if ax is not None:
+        ax.legend(tids)
+        ax.set_title("thread occupancy across execution")
     plt.show()
 
 
