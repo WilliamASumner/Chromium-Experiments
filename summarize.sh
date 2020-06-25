@@ -39,3 +39,7 @@ cp /tmp/$SUMMARY_LOG ./$SUMMARY_LOG
 datamash -H -s -g 1 median 2 mean 2 q1 2 q3 2 count 2 min 2 max 2 < $SUMMARY_LOG > /tmp/$SUMMARY_LOG
 cat /tmp/$SUMMARY_LOG | column -t > ./$SUMMARY_LOG
 cp ./$SUMMARY_LOG /tmp/$SUMMARY_LOG
+
+awk '{ if($1 != "PageLoadTime") { print }}' /tmp/$SUMMARY_LOG > ./$SUMMARY_LOG # reorder PageLoadTime to the bottom
+echo "-------------------------" >> ./$SUMMARY_LOG
+awk '{ if($1 == "PageLoadTime") { print }}' /tmp/$SUMMARY_LOG >> ./$SUMMARY_LOG
