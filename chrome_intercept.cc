@@ -208,11 +208,11 @@ namespace blink {
 
         switch(ready_state) {
             case kInteractive:
-                experiment_mark_page_loaded(); // js now running
                 break;
             case kLoading:
                 break; // still loading
             case kComplete:
+                experiment_mark_page_loaded(); // js now running
                 break; // full page load
             default:
                 break;
