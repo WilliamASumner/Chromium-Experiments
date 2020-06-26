@@ -1,6 +1,7 @@
 *.so
 *.out
 .*.un~
+.*.swp
 stderr_log.txt
 stdout_log.txt
 experiment/NanoLog
