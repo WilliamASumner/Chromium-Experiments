@@ -17,8 +17,8 @@
 
 
 const int timeout_s = 45;
-std::mutex didstart_mut, log_mut, time_mut, config_mut;
-bool did_start = false, page_loaded = false, config_set = false;
+std::mutex didstart_mut, log_mut, time_mut, config_mut, page_start_mut;
+bool did_start = false, page_loaded = false, config_set = false, page_started = false;
 static int pgid = 0;
 
 std::unique_ptr<g3::LogWorker> worker = nullptr;
@@ -62,7 +62,6 @@ void set_config(const char* config) {
     }
 }
 
-//TODO make hex
 std::string mask_to_str(cpu_set_t mask) {
     int big = 0, little = 0;
     std::string result = "XXXXXXXX";
@@ -91,7 +90,6 @@ void experiment_start_timer() {
     sact.sa_handler = sigalrm_handler;
     sigaction(SIGALRM, &sact, NULL);
 
-
     alarm(timeout_s); // start timeout
 }
 
@@ -103,7 +101,7 @@ void experiment_init(const char *exec_name) {
 
     set_sigint_hndlr();
 
-    fprintf(stderr,"Initializing experiment");
+    fprintf(stderr,"Initializing experiment\n");
     {
         const std::lock_guard<std::mutex> lock(time_mut);
         clock_gettime(CLOCK_MONOTONIC,&page_start);
@@ -126,14 +124,6 @@ void experiment_init(const char *exec_name) {
     std::string logdir = "/home/vagrant/research/interpose/logs/";
     std::string logfile(env_log);
 
-    /*std::random_device rd;
-    std::mt19937 mt(rd());
-
-    // generate unique file id, so render processes don't mess eachother up
-    std::string str("0123456789abcdefghijklmnopqrstuvwxyz");
-    std::shuffle(str.begin(), str.end(),mt);
-    std::string id = str.substr(0,8);*/
-
     worker=g3::LogWorker::createLogWorker();
     handle=worker->addDefaultLogger(logfile,logdir);
 
@@ -150,9 +140,11 @@ void experiment_stop() {
     }
 }
 
-// TODO check this, it might be called more than once
 void experiment_mark_page_start() {
-    clock_gettime(CLOCK_MONOTONIC,&page_start);
+    const std::lock_guard<std::mutex> lock(page_start_mut);
+    if (!page_started) {
+        clock_gettime(CLOCK_MONOTONIC,&page_start);
+    }
 }
 
 void experiment_mark_page_loaded() {
@@ -165,6 +157,7 @@ void experiment_mark_page_loaded() {
                 - ((double)page_start.tv_sec*1000 + (double)page_start.tv_nsec/ns_to_ms);
             page_loaded = true;
         }
+
         unsigned int tid = syscall(SYS_gettid);
         {
             const std::lock_guard<std::mutex> lock(log_mut);
@@ -193,10 +186,8 @@ void experiment_fexit(const char* func_name) {
 
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask = set_affinity_all();
-
     {
         const std::lock_guard<std::mutex> lock(log_mut);
         LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu() << "\t" << latency;
     }
 }
-
