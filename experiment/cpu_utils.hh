@@ -47,7 +47,7 @@ cpu_set_t set_affinity_all(void);
 
 cpu_set_t get_affinity_permute(int bigs, int lils);
 
-void set_affinity_with_mask(cpu_set t mask);
+void set_affinity_with_mask(cpu_set_t mask);
 
 unsigned int get_curr_cpu();
 #endif
