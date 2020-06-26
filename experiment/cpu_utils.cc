@@ -65,6 +65,10 @@ cpu_set_t gen_affinity_permute(int bigs, int lils, std::mt19937 mt) {
     return mask;
 }
 
+void set_affinity_with_mask(cpu_set_t mask) {
+    sched_setaffinity(0,sizeof(mask),&mask);
+}
+
 unsigned int get_curr_cpu() {
     return sched_getcpu();
 }
