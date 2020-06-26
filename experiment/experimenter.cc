@@ -17,8 +17,9 @@
 
 
 const int timeout_s = 45;
-std::mutex didstart_mut, log_mut, time_mut, config_mut, page_start_mut;
-bool did_start = false, page_loaded = false, config_set = false, page_started = false;
+std::mutex log_mut, time_mut, config_mut;
+std::atomic<bool> did_start(false), page_loaded(false), config_set(false), page_started(false);
+
 static int pgid = 0;
 
 std::unique_ptr<g3::LogWorker> worker = nullptr;
@@ -94,7 +95,6 @@ void experiment_start_timer() {
 }
 
 void experiment_init(const char *exec_name) {
-    const std::lock_guard<std::mutex> lock(didstart_mut);
     if (did_start) {
         return;
     }
@@ -133,7 +133,6 @@ void experiment_init(const char *exec_name) {
 }
 
 void experiment_stop() {
-    const std::lock_guard<std::mutex> lock(didstart_mut);
     if (did_start) {
         //fprintf(stderr,"\nProgram exceeded %d s limit\n",timeout_s);
         g3::internal::shutDownLogging();
@@ -141,7 +140,6 @@ void experiment_stop() {
 }
 
 void experiment_mark_page_start() {
-    const std::lock_guard<std::mutex> lock(page_start_mut);
     if (!page_started) {
         clock_gettime(CLOCK_MONOTONIC,&page_start);
     }
