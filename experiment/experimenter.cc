@@ -55,12 +55,11 @@ void set_config(const char* config) {
         fprintf(stderr,"Error: invalid CORE_CONFIG '%s'",config);
     }
 
-    config_mut.lock();
+    const std::lock_guard<std::mutex> lock(config_mut);
     if (!config_set) {
         experiment_config.nbigs = bigs;
         experiment_config.nlils = lils;
     }
-    config_mut.unlock();
 }
 
 //TODO make hex
@@ -97,18 +96,18 @@ void experiment_start_timer() {
 }
 
 void experiment_init(const char *exec_name) {
-    didstart_mut.lock();
+    const std::lock_guard<std::mutex> lock(didstart_mut);
     if (did_start) {
-        didstart_mut.unlock();
         return;
     }
 
     set_sigint_hndlr();
 
     fprintf(stderr,"Initializing experiment");
-    time_mut.lock();
-    clock_gettime(CLOCK_MONOTONIC,&page_start);
-    time_mut.unlock();
+    {
+        const std::lock_guard<std::mutex> lock(time_mut);
+        clock_gettime(CLOCK_MONOTONIC,&page_start);
+    }
 
     char* env_log = getenv("LOG_FILE");
     if(env_log == nullptr) {
@@ -141,16 +140,14 @@ void experiment_init(const char *exec_name) {
     g3::initializeLogging(worker.get());
 
     did_start = true; // done initializing, all threads can go now
-    didstart_mut.unlock();
 }
 
 void experiment_stop() {
-    didstart_mut.lock();
+    const std::lock_guard<std::mutex> lock(didstart_mut);
     if (did_start) {
         //fprintf(stderr,"\nProgram exceeded %d s limit\n",timeout_s);
         g3::internal::shutDownLogging();
     }
-    didstart_mut.unlock();
 }
 
 // TODO check this, it might be called more than once
@@ -161,15 +158,18 @@ void experiment_mark_page_start() {
 void experiment_mark_page_loaded() {
     if (!page_loaded) {
         clock_gettime(CLOCK_MONOTONIC,&page_end);
-        time_mut.lock();
-        double page_load = ((double)page_end.tv_sec*1000 + (double)page_end.tv_nsec/ns_to_ms)
-            - ((double)page_start.tv_sec*1000 + (double)page_start.tv_nsec/ns_to_ms);
-        page_loaded = true;
-        time_mut.unlock();
+        double page_load = -1.0;
+        {
+            const std::lock_guard<std::mutex> lock(time_mut);
+            page_load = ((double)page_end.tv_sec*1000 + (double)page_end.tv_nsec/ns_to_ms)
+                - ((double)page_start.tv_sec*1000 + (double)page_start.tv_nsec/ns_to_ms);
+            page_loaded = true;
+        }
         unsigned int tid = syscall(SYS_gettid);
-        log_mut.lock();
-        LOG(INFO)<< tid << ":\t" << "PageLoadTime\t" << page_load;
-        log_mut.unlock();
+        {
+            const std::lock_guard<std::mutex> lock(log_mut);
+            LOG(INFO)<< tid << ":\t" << "PageLoadTime\t" << page_load;
+        }
 
     }
 
@@ -178,9 +178,10 @@ void experiment_mark_page_loaded() {
 void experiment_fentry(const char* func_name) {
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask = set_affinity_little();
-    log_mut.lock();
-    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu();
-    log_mut.unlock();
+    {
+        const std::lock_guard<std::mutex> lock(log_mut);
+        LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu();
+    }
 
     clock_gettime(CLOCK_MONOTONIC,&time_start);
 }
@@ -193,8 +194,9 @@ void experiment_fexit(const char* func_name) {
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask = set_affinity_all();
 
-    log_mut.lock();
-    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu() << "\t" << latency;
-    log_mut.unlock();
+    {
+        const std::lock_guard<std::mutex> lock(log_mut);
+        LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu() << "\t" << latency;
+    }
 }
 
