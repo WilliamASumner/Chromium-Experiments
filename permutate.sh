@@ -84,14 +84,15 @@ expand_FLAGS_and_FP() {
 
 
 echo_usage() {
-    echo "usage: $0 [-h | -p PREFIX | -i ITERATIONS | -c COMMAND | -f FLAGS]"
+    echo "usage: $0 [-h | -p PREFIX | -i ITERATIONS | -c COMMAND | -f FLAGS | -v]"
     echo "-h : Help,       shows this usage message"
-    echo "-p : Prefix,     the prefix to use for files generated from the script. Useful for labelling experiment trials"
+    echo "-p : Prefix,     the prefix to use for files generated from the script. Useful for labeling experiment trials"
     echo "-i : Iterations, number of iterations to run"
     echo "-c : Command,    command to be run on each permutation"
     echo "-f : Flags,      flags to be run with the given command"
+    echo "-v : Verbose,    run with verbose output"
     echo "Predefined values: +url = url, +site = website, +gov = freq gov, +iter = iteration, +config = core configuration"
-    echo "Note: the sitekeyword returns a trimmed value of the url: 'http://www.example.com' -> 'example' for compactness"
+    echo "Note: the site keyword returns a trimmed value of the url: 'http://www.example.com' -> 'example' for compactness"
     exit 0
 }
 
