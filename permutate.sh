@@ -67,7 +67,6 @@ gen_itersite() { # generate a permutation of websites
 }
 
 expand_FLAGS_and_FP() {
-    echo $SITENAME
     FLAGS=${FLAGS//'+config'/"$config"}
     FLAGS=${FLAGS//'+site'/"$SITENAME"}
     FLAGS=${FLAGS//'+url'/"$url"}
@@ -96,7 +95,7 @@ echo_usage() {
     exit 0
 }
 
-while getopts ":hp:i:c:f:" opt; do
+while getopts ":hp:i:c:f:v" opt; do
     case $opt in
         h)
             echo_usage
@@ -116,6 +115,10 @@ while getopts ":hp:i:c:f:" opt; do
         f)
             FLAGS=$OPTARG
             ;;
+
+        v)  export VERBOSE=1
+            ;;
+
         \?) # invalid arg
             echo "Invalid arg -$OPTARG" >&2
             echo_usage
@@ -147,7 +150,10 @@ done
 
 
 for (( iter=1; iter <=$ITERATIONS; iter++ )); do
-    echo "iteration $iter"
+
+    if [[ "$VERBOSE" == "1" ]]; then 
+        echo "iteration $iter"
+    fi
 
     # for each governor, could be for each config first,
     # but the idea behind looping through various configs 
@@ -165,8 +171,10 @@ for (( iter=1; iter <=$ITERATIONS; iter++ )); do
 
                 expand_FLAGS_and_FP # expand embedded variables
 
-                echo "on permutation CORE_CONFIG=$config LOG_FILE=$FILE_PREFIX_P-$ID"
-                echo "'$COMMAND' $FLAGS"
+                if [[ "$VERBOSE" == "1" ]]; then 
+                    echo "on permutation CORE_CONFIG=$config LOG_FILE=$FILE_PREFIX_P-$ID for site '$SITENAME'"
+                    echo "'$COMMAND' $FLAGS"
+                fi
 
                 #export GOVERNOR=$gov # not needed right now
                 export CORE_CONFIG=$config
