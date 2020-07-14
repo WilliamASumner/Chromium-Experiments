@@ -40,6 +40,7 @@ void sigalrm_handler( int sig) {
 
     int result = killpg(pgid,SIGINT);
     if (result != 0) {
+        fprintf(stderr,"experimenter.cc: ");
         fprintf(stderr,"Error killing process group: %d;%d",pgid,result);
     }
 }
@@ -53,6 +54,7 @@ void set_config(const char* config) {
     int bigs = config[0] - '0';
     int lils = config[3] - '0';
     if (bigs > 4 || bigs < 0 || lils > 4 || lils < 0) {
+        fprintf(stderr,"experimenter.cc: ");
         fprintf(stderr,"Error: invalid CORE_CONFIG '%s'",config);
     }
 
@@ -101,6 +103,7 @@ void experiment_init(const char *exec_name) {
 
     set_sigint_hndlr();
 
+    fprintf(stderr,"experimenter.cc: ");
     fprintf(stderr,"Initializing experiment\n");
     {
         const std::lock_guard<std::mutex> lock(time_mut);
@@ -109,12 +112,14 @@ void experiment_init(const char *exec_name) {
 
     char* env_log = getenv("LOG_FILE");
     if(env_log == nullptr) {
+        fprintf(stderr,"experimenter.cc: ");
         fprintf(stderr,"Error: no LOG_FILE defined\n");
         exit(1);
     }
 
     char* env_config = getenv("CORE_CONFIG");
     if(env_config == nullptr) {
+        fprintf(stderr,"experimenter.cc: ");
         fprintf(stderr,"Error: no CORE_CONFIG defined\n");
         exit(1);
     }
@@ -134,6 +139,7 @@ void experiment_init(const char *exec_name) {
 
 void experiment_stop() {
     if (did_start) {
+        //fprintf(stderr,"experimenter.cc: ");
         //fprintf(stderr,"\nProgram exceeded %d s limit\n",timeout_s);
         g3::internal::shutDownLogging();
     }
