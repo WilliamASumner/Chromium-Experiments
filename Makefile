@@ -1,14 +1,17 @@
 .PHONY=clean run clearlogs
 
-PERM_PREFIX:=+site
+SITE_PREFIX:=+site
 
 default: libintercept.so
 
 run: logs/ libintercept.so
-	./permutate.sh -c './run-chrome.sh' -f '-w +url -v' -p '$(PERM_PREFIX)'
+	./permutate.sh -c './run-chrome.sh' -f '-w +url -v' -p '$(SITE_PREFIX)'
 
-runv: logs/ libintercept.so
-	./permutate.sh -c './run-chrome.sh' -f '-w +url -vi' -p '$(PERM_PREFIX)'
+run-verbose: logs/ libintercept.so
+	./permutate.sh -v -c './run-chrome.sh' -f '-w +url -vi' -p '$(SITE_PREFIX)'
+
+run-graphical: logs/ libintercept.so
+	./permutate.sh -c './run-chrome.sh' -f '-w +url -vg' -p '$(SITE_PREFIX)'
 
 
 logs/:
