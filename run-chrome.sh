@@ -7,7 +7,10 @@ BINARY=chrome
 CHROME_DIR=/home/vagrant/chromium/src/out/x64Linux
 WEBPAGE="cnn.com"
 FLAGS="--no-zygote --no-sandbox"
-VERBOSE=0
+
+if [ -z $VERBOSE ]; then
+    VERBOSE=0
+fi
 CHROME_VERBOSE=0
 
 echo_usage() {
