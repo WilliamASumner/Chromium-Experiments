@@ -57,6 +57,7 @@ extern "C" void _exit(int status) { //like exit but does not call onexit functio
     }
     experiment_stop();
     orig__exit(status);
+    abort();
 }
 
 extern "C" void exit(int status) { //like exit but does not call onexit functions
@@ -67,6 +68,7 @@ extern "C" void exit(int status) { //like exit but does not call onexit function
     }
     experiment_stop();
     orig_exit(status);
+    abort();
 }
 
 /* WTF::String - used a lot in blink */
