@@ -114,11 +114,15 @@ while getopts ":hpgvib:d:l:w:f:" opt; do
 done
 
 if [ -z $XVFB_PID ]; then
-    echo "Starting Xvfb"
+    if [[ "$VERBOSE" == 1 ]]; then 
+        echo "Starting Xvfb"
+    fi
     Xvfb :99 -screen 0 800x600x16 &
     export DISPLAY=:99
 elif ! [[ "$XVFB_PID" == "-1" ]]; then
-    echo "Connecting to existing Xvfb"
+    if [[ "$VERBOSE" == 1 ]]; then 
+        echo "Connecting to existing Xvfb"
+    fi
     export DISPLAY=:99
 fi
 
