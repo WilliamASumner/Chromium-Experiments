@@ -7,13 +7,15 @@ The goal of this project is to increase the energy efficiency of mobile page loa
 - A useful set of tools for running experiments that run by interposing important Chromium functions
 
 ## Prerequisites
-### Things you'll need to run these experiments
+### Things needed to run these experiments
 - A Linux machine
 - `make`
 - ccurtsinger's [interposing header](https://github.com/ccurtsinger/interpose)
 - The [g3log](https://github.com/KjellKod/g3log) logger for data collection
+- The [PyChromeDevTools](https://github.com/marty90/PyChromeDevTools), see the repo for installation
+  details
 
-### Things that will make your life easier
+### Things that will make life easier
 - A checked out chromium repo, see the [instructions](https://chromium.googlesource.com/chromium/src/+/master/docs/linux/build_instructions.md). This will help in creating the proper mangled symbols
 - `nm` for reading the dynamic symbols in a binary
 - Zack's [guide](https://docs.google.com/document/d/1TVIYvACQTvLrhdRw6EelifGGxvcSxwn_mU4oUGVymFE/edit) for cross-compiling to ARM
