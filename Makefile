@@ -1,4 +1,4 @@
-.PHONY=clean run clearlogs
+.PHONY=clean run run-verbose run-graphical clearlogs run-pychrome
 
 SITE_PREFIX:=+site
 
@@ -12,6 +12,9 @@ run-verbose: logs/ libintercept.so
 
 run-graphical: logs/ libintercept.so
 	./permutate.sh -c './run-chrome.sh' -f '-w +url -vg' -p '$(SITE_PREFIX)'
+
+run-pychrome: logs/ libintercept.so
+	./python3 chrome-experimenter.py
 
 
 logs/:
