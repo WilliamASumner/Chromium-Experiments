@@ -62,6 +62,7 @@ void set_config(const char* config) {
     if (!config_set) {
         experiment_config.nbigs = bigs;
         experiment_config.nlils = lils;
+        config_set = true;
     }
 }
 
@@ -176,7 +177,8 @@ void experiment_mark_page_loaded() {
 
 void experiment_fentry(const char* func_name) {
     unsigned int tid = syscall(SYS_gettid);
-    cpu_set_t mask = set_affinity_little();
+    cpu_set_t mask;
+    set_affinity_little(&mask);
     {
         const std::lock_guard<std::mutex> lock(log_mut);
         LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu();
@@ -191,7 +193,8 @@ void experiment_fexit(const char* func_name) {
                         - ((double)time_start.tv_sec*1000 + (double)time_start.tv_nsec/ns_to_ms);
 
     unsigned int tid = syscall(SYS_gettid);
-    cpu_set_t mask = set_affinity_all();
+    cpu_set_t mask;
+    set_affinity_all(&mask);
     {
         const std::lock_guard<std::mutex> lock(log_mut);
         LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu() << "\t" << latency;
