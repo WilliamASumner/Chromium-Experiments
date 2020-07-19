@@ -1,5 +1,6 @@
 #include <stdio.h> // printf
 #include <stdlib.h> // getenv
+#include <string.h>
 #include <iostream>
 #include <mutex>
 
@@ -16,9 +17,10 @@
 #include <g3log/logworker.hpp>
 
 
-const int timeout_s = 45;
 std::mutex log_mut, time_mut, config_mut, start_mut;
 std::atomic<bool> did_start(false), page_loaded(false), config_set(false), page_started(false);
+std::atomic<int> timeout_s(45);
+bool external_timing = false;
 
 static int pgid = 0;
 
@@ -94,7 +96,9 @@ void experiment_start_timer() {
     sact.sa_handler = sigalrm_handler;
     sigaction(SIGALRM, &sact, NULL);
 
-    alarm(timeout_s); // start timeout
+    if (!external_timing) {
+        alarm(timeout_s); // start timeout
+    }
 }
 
 void experiment_init(const char *exec_name) {
@@ -103,14 +107,26 @@ void experiment_init(const char *exec_name) {
         return;
     }
 
-
-    set_sigint_hndlr();
-
     fprintf(stderr,"experimenter.cc: ");
     fprintf(stderr,"Initializing experiment\n");
-    {
+
+    char* env_timing = getenv("TIMING");
+    if (strncmp(env_timing,"external",9) == 0) { // default to internal timing
+        external_timing = true;
+    } else if (env_timing != nullptr) {
+        int timing_s = atoi(env_timing);
+        if (timing_s > 0)
+            timeout_s = timing_s; // update time to wait
+        else {
+            fprintf(stderr,"experimenter.cc: ");
+            fprintf(stderr,"Error using env TIMING variable\n");
+        }
+    }
+
+    if (external_timing) {
         const std::lock_guard<std::mutex> lock(time_mut);
         clock_gettime(CLOCK_MONOTONIC,&page_start);
+        set_sigint_hndlr();
     }
 
     char* env_log = getenv("LOG_FILE");
@@ -149,13 +165,13 @@ void experiment_stop() {
 }
 
 void experiment_mark_page_start() {
-    if (!page_started) {
+    if (!page_started && !external_timing) {
         clock_gettime(CLOCK_MONOTONIC,&page_start);
     }
 }
 
 void experiment_mark_page_loaded() {
-    if (!page_loaded) {
+    if (!page_loaded && !external_timing) {
         clock_gettime(CLOCK_MONOTONIC,&page_end);
         double page_load = -1.0;
         {
@@ -172,7 +188,6 @@ void experiment_mark_page_loaded() {
         }
 
     }
-
 }
 
 void experiment_fentry(const char* func_name) {
