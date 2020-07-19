@@ -3,6 +3,8 @@
 #include <string.h>
 #include <iostream>
 #include <mutex>
+#include <string> // TODO update all refs to this
+#include <map> // map function names
 
 #include <unistd.h> // tid
 #include <sys/syscall.h> // get tid
@@ -18,11 +20,14 @@
 
 
 std::mutex log_mut, time_mut, config_mut, start_mut;
-std::atomic<bool> did_start(false), page_loaded(false), config_set(false), page_started(false);
+std::atomic<bool> did_start(false), page_loaded(false), config_set(false), page_started(false), external_timing(false);
 std::atomic<int> timeout_s(45);
-bool external_timing = false;
 
 static int pgid = 0;
+
+// TODO add queue for function timing (in case one is called inside of another)
+
+// TODO add function map
 
 std::unique_ptr<g3::LogWorker> worker = nullptr;
 std::unique_ptr<g3::FileSinkHandle> handle = nullptr;
@@ -190,7 +195,7 @@ void experiment_mark_page_loaded() {
     }
 }
 
-void experiment_fentry(const char* func_name) {
+void experiment_fentry(std::string func_name) {
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask;
     set_affinity_little(&mask);
@@ -202,7 +207,7 @@ void experiment_fentry(const char* func_name) {
     clock_gettime(CLOCK_MONOTONIC,&time_start);
 }
 
-void experiment_fexit(const char* func_name) {
+void experiment_fexit(std::string func_name) {
     clock_gettime(CLOCK_MONOTONIC,&time_end);
     double latency = ((double)time_end.tv_sec*1000 + (double)time_end.tv_nsec/ns_to_ms)
                         - ((double)time_start.tv_sec*1000 + (double)time_start.tv_nsec/ns_to_ms);
