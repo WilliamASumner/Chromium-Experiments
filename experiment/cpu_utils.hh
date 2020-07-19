@@ -4,18 +4,20 @@
 
 #ifndef CPU_UTILS_H
 #define CPU_UTILS_H
+#include <sched.h>
+#include <random>
 
-void _init_affinity();
+void set_affinity_little(cpu_set_t* mask);
 
-cpu_set_t set_affinity_little(void);
+void set_affinity_big(cpu_set_t* mask);
 
-cpu_set_t set_affinity_big(void);
+void set_affinity_all(cpu_set_t* mask);
 
-cpu_set_t set_affinity_all(void);
+void set_affinity_permute(cpu_set_t* mask, std::mt19937 rng, int bigs, int lils);
 
-cpu_set_t get_affinity_permute(int bigs, int lils, std::mt19937 mt);
+void set_affinity_with_mask(cpu_set_t* mask);
 
-void set_affinity_with_mask(cpu_set_t mask);
+void print_mask(cpu_set_t* mask, int cpus);
 
 unsigned int get_curr_cpu();
 
