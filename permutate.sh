@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILE_PREFIX="output"
+FILE_PREFIX="permuatesh"
 ITERATIONS=1
 COMMAND="echo"
 FLAGS=""
