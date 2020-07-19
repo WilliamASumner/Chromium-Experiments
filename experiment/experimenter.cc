@@ -17,7 +17,7 @@
 
 
 const int timeout_s = 45;
-std::mutex log_mut, time_mut, config_mut;
+std::mutex log_mut, time_mut, config_mut, start_mut;
 std::atomic<bool> did_start(false), page_loaded(false), config_set(false), page_started(false);
 
 static int pgid = 0;
@@ -97,9 +97,11 @@ void experiment_start_timer() {
 }
 
 void experiment_init(const char *exec_name) {
+    const std::lock_guard<std::mutex> lock(start_mut);
     if (did_start) {
         return;
     }
+
 
     set_sigint_hndlr();
 
