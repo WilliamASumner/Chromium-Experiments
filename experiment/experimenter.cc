@@ -134,6 +134,24 @@ void experiment_init(const char *exec_name) {
         set_sigint_hndlr();
     }
 
+    char* ipc = getenv("IPC");
+    if (ipc != nullptr && strncmp(ipc,"on",3) == 0) { // default to non-IPC
+        // setup IPC
+        do_ipc = true;
+
+        char* mmap_file = getenv("MMAP_FILE");
+        if (mmap_file == nullptr) {
+            fprintf(stderr,"experimenter.cc: ");
+            fprintf(stderr,"Error reading MMAP_FILE variable\n");
+            exit(1);
+        }
+
+        g3::initializeLogging(worker.get());
+        did_start = true; // done initializing, all threads can go now
+        return;
+    }
+
+
     char* env_log = getenv("LOG_FILE");
     if(env_log == nullptr) {
         fprintf(stderr,"experimenter.cc: ");
