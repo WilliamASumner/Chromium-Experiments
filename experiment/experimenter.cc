@@ -116,7 +116,7 @@ void experiment_init(const char *exec_name) {
     fprintf(stderr,"Initializing experiment\n");
 
     char* env_timing = getenv("TIMING");
-    if (strncmp(env_timing,"external",9) == 0) { // default to internal timing
+    if (env_timing != nullptr && strncmp(env_timing,"external",9) == 0) { // default to internal timing
         external_timing = true;
     } else if (env_timing != nullptr) {
         int timing_s = atoi(env_timing);
@@ -137,7 +137,7 @@ void experiment_init(const char *exec_name) {
     char* ipc = getenv("IPC");
     if (ipc != nullptr && strncmp(ipc,"on",3) == 0) { // default to non-IPC
         // setup IPC
-        do_ipc = true;
+        //do_ipc = true;
 
         char* mmap_file = getenv("MMAP_FILE");
         if (mmap_file == nullptr) {
