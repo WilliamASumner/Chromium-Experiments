@@ -80,8 +80,8 @@ while getopts ":hpgvib:d:l:w:f:" opt; do
             ;;
 
         f)
-            if [[ "${OPTARGS%:}" == "clear" ]]; then
-                FLAGS="$OPTARG"
+            if [[ "${OPTARG%%:*}" == "clear" ]]; then
+                FLAGS="${OPTARG#*:}"
             else
                 FLAGS="$FLAGS $OPTARG"
             fi
