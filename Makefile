@@ -1,4 +1,4 @@
-.PHONY=clean run run-verbose run-graphical clearlogs run-pychrome
+.PHONY=clean run run-verbose run-graphical clear-logs run-pychrome
 
 SITE_PREFIX:=+site
 
@@ -26,5 +26,5 @@ libintercept.so: chrome_intercept.cc experiment/cpu_utils.* experiment/experimen
 clean:
 	-@rm *.so *.out 2>/dev/null || true
 
-clearlogs:
+clear-logs:
 	-@rm logs/*.log 2>/dev/null || true
