@@ -33,6 +33,9 @@ std::unique_ptr<g3::LogWorker> worker = nullptr;
 std::unique_ptr<g3::FileSinkHandle> handle = nullptr;
 
 thread_local struct timespec time_start,time_end;
+thread_local std::random_device rdev;
+thread_local std::mt19937 rng;
+
 const unsigned int ns_to_ms = 1000000;
 
 struct timespec page_start, page_end;
@@ -114,6 +117,14 @@ void experiment_init(const char *exec_name) {
 
     fprintf(stderr,"experimenter.cc: ");
     fprintf(stderr,"Initializing experiment\n");
+
+    // Init RNG
+    char* env_seed = getenv("RNG_SEED");
+    if (env_seed != nullptr && atoi(env_seed) != 0) {
+        rng.seed(atoi(env_seed));
+    } else {
+        rng.seed(rdev());
+    }
 
     char* env_timing = getenv("TIMING");
     if (env_timing != nullptr && strncmp(env_timing,"external",9) == 0) { // default to internal timing
