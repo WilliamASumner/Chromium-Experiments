@@ -150,10 +150,10 @@ void experiment_init(const char *exec_name) {
         // setup IPC
         //do_ipc = true;
 
-        char* mmap_file = getenv("MMAP_FILE");
-        if (mmap_file == nullptr) {
+        char* pipe_file = getenv("PIPE_FILE");
+        if (pipe_file == nullptr) {
             fprintf(stderr,"experimenter.cc: ");
-            fprintf(stderr,"Error reading MMAP_FILE variable\n");
+            fprintf(stderr,"Error reading PIPE_FILE variable\n");
             exit(1);
         }
 
