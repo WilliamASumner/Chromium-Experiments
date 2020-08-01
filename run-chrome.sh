@@ -64,7 +64,7 @@ while getopts ":hpgvib:d:l:w:f:" opt; do
 
         l)
             if [[ "$OPTARG" == "None" ]]; then
-                echo "Received 'None' for option '-l', unsetting LD_PRELOAD"
+                echo "$0: Received 'None' for option '-l', unsetting LD_PRELOAD"
                 unset LD_PRELOAD_VAL
                 unset LD_PRELOAD
             elif [ ! -f "$OPTARG" ]; then
@@ -88,7 +88,7 @@ while getopts ":hpgvib:d:l:w:f:" opt; do
             ;;
 
         \?) # invalid arg
-            echo "Invalid arg -$OPTARG" >&2
+            echo "$0: Invalid arg -'$OPTARG'" >&2
             echo_usage
             ;;
 
