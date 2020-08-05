@@ -169,6 +169,7 @@ void experiment_init(const char *exec_name) {
         fprintf(stderr,"Error: no LOG_FILE defined\n");
         exit(1);
     }
+    std::string env_log_str(env_log);
 
     char* env_config = getenv("CORE_CONFIG");
     if(env_config == nullptr) {
@@ -179,8 +180,15 @@ void experiment_init(const char *exec_name) {
     set_config(env_config);
     int size_mb = 2;
 
-    std::string logdir = "/home/vagrant/research/interpose/logs/";
-    std::string logfile(env_log);
+    std::string logdir,logfile;
+    size_t split_spot = env_log_str.find_last_of("/");
+    if (split_spot == std::string::npos) {
+        logdir = "/home/vagrant/research/interpose/logs/";
+        logfile = env_log_str;
+    } else {
+        logdir = env_log_str.substr(0,split_spot);
+        logfile = env_log_str.substr(split_spot+1);
+    }
 
     worker=g3::LogWorker::createLogWorker();
     handle=worker->addDefaultLogger(logfile,logdir);
