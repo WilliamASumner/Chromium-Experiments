@@ -135,7 +135,7 @@ void experiment_init(const char *exec_name) {
             timeout_s = timing_s; // update time to wait
         else {
             fprintf(stderr,"experimenter.cc: ");
-            fprintf(stderr,"Error using env TIMING variable\n");
+            fprintf(stderr,"Error: invalid TIMING value '%s' \n",env_timing);
         }
     }
 
@@ -150,18 +150,14 @@ void experiment_init(const char *exec_name) {
         // setup IPC
         //do_ipc = true;
 
-        char* pipe_file = getenv("PIPE_FILE");
-        if (pipe_file == nullptr) {
+        char* mmap_file = getenv("MMAP_FILE");
+        if (mmap_file == nullptr) {
             fprintf(stderr,"experimenter.cc: ");
-            fprintf(stderr,"Error reading PIPE_FILE variable\n");
+            fprintf(stderr,"Error: no MMAP_FILE defined\n");
             exit(1);
         }
 
-        g3::initializeLogging(worker.get());
-        did_start = true; // done initializing, all threads can go now
-        return;
     }
-
 
     char* env_log = getenv("LOG_FILE");
     if(env_log == nullptr) {
@@ -172,12 +168,13 @@ void experiment_init(const char *exec_name) {
     std::string env_log_str(env_log);
 
     char* env_config = getenv("CORE_CONFIG");
-    if(env_config == nullptr) {
+    if(env_config == nullptr && ipc == nullptr ) {
         fprintf(stderr,"experimenter.cc: ");
-        fprintf(stderr,"Error: no CORE_CONFIG defined\n");
+        fprintf(stderr,"Error: IPC is not enabled, yet no CORE_CONFIG defined\n");
         exit(1);
+    } else if (env_config != nullptr) {
+        set_config(env_config);
     }
-    set_config(env_config);
     int size_mb = 2;
 
     std::string logdir,logfile;
