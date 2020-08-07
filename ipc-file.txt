@@ -1,0 +1,33 @@
+--------------------------
+Example IPC file structure
+--------------------------
+10 // number of entries
+//Entry 1
+00001111 // fentry mask
+11110000 // fexit mask
+3 // # of functions this applies to
+ParseStrings // example functions
+UpdateLayout
+ExecuteScript
+.
+.
+.
+// Entry 10
+11111111 // fentry mask
+11110000 // fexit mask
+1 // # functions
+ParseSheet // example function
+
+---------------------------
+Processing in experiment.cc
+---------------------------
+experiment_fentry(string name) {
+        .
+        .
+        .
+    ipc_read_file(mmap_file, map<string,mask>&); // time this
+    mask = map[name]; // and this
+        .
+        .
+        .
+}
