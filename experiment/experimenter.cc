@@ -19,7 +19,7 @@
 #include <g3log/logworker.hpp>
 
 
-std::mutex log_mut, time_mut, config_mut, start_mut;
+std::mutex time_mut, config_mut, start_mut;
 std::atomic<bool> did_start(false), page_loaded(false), config_set(false), page_started(false), external_timing(false);
 std::atomic<int> timeout_s(45);
 
@@ -77,7 +77,6 @@ void set_config(const char* config) {
 }
 
 std::string mask_to_str(cpu_set_t mask) {
-    int big = 0, little = 0;
     std::string result = "XXXXXXXX";
     for (int i = 0; i < 8; i++) {
         if (CPU_ISSET(i,&mask)) {
@@ -175,7 +174,6 @@ void experiment_init(const char *exec_name) {
     } else if (env_config != nullptr) {
         set_config(env_config);
     }
-    int size_mb = 2;
 
     std::string logdir,logfile;
     size_t split_spot = env_log_str.find_last_of("/");
@@ -221,10 +219,7 @@ void experiment_mark_page_loaded() {
         }
 
         unsigned int tid = syscall(SYS_gettid);
-        {
-            const std::lock_guard<std::mutex> lock(log_mut);
-            LOG(INFO)<< tid << ":\t" << "PageLoadTime\t" << page_load;
-        }
+        LOG(INFO)<< tid << ":\t" << "PageLoadTime\t" << page_load;
 
     }
 }
@@ -233,10 +228,7 @@ void experiment_fentry(std::string func_name) {
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask;
     set_affinity_little(&mask);
-    {
-        const std::lock_guard<std::mutex> lock(log_mut);
-        LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu();
-    }
+    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu();
 
     clock_gettime(CLOCK_MONOTONIC,&time_start);
 }
@@ -249,8 +241,5 @@ void experiment_fexit(std::string func_name) {
     unsigned int tid = syscall(SYS_gettid);
     cpu_set_t mask;
     set_affinity_all(&mask);
-    {
-        const std::lock_guard<std::mutex> lock(log_mut);
-        LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu() << "\t" << latency;
-    }
+    LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu() << "\t" << latency;
 }
