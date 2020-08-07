@@ -28,3 +28,4 @@ clean:
 
 clear-logs:
 	-@rm logs/*.log 2>/dev/null || true
+	-@rm -rf logs/exp-* 2>/dev/null || true
