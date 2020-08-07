@@ -1,0 +1,7 @@
+- queues for timing nested functions
+- get IPC working between python + exp framework
+- figure out why chrome crashes on twitter...
+- get coz-like plots (big/little tradeoff) for each function
+    - adapt existing python script for that
+- update summarize.sh for new experiment folder structure
+- update docs
