@@ -21,7 +21,7 @@ logs/:
 	mkdir logs/
 
 libintercept.so: chrome_intercept.cc experiment/cpu_utils.* experiment/experimenter.*
-	clang++ -g -shared -fPIC -ldl -lg3logger -o libintercept.so chrome_intercept.cc experiment/cpu_utils.cc experiment/experimenter.cc
+	clang++ -g -shared -fPIC -ldl -lg3logger -Wall -o libintercept.so chrome_intercept.cc experiment/cpu_utils.cc experiment/experimenter.cc
 
 clean:
 	-@rm *.so *.out 2>/dev/null || true
