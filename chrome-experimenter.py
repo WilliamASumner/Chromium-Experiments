@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import PyChromeDevTools # interacting with chrome
 import subprocess       # running chrome
 import os               # environ, getcwd
@@ -30,8 +31,6 @@ def printv(msg,verbose):
 def printe(msg):
     print(f"{sys.argv[0]}: " + msg)
     sys.exit(1)
-
-
 
 # Arg parsing
 parser = argparse.ArgumentParser()
@@ -168,7 +167,11 @@ with open(mFilename, "r+b")  as mfile, \
 
     # Start the chrome process
     printv(chromeCmd,args.verbose)
-    process = subprocess.Popen(chromeCmd)#,stdout=log,stderr=errlog)
+    try:
+        process = subprocess.Popen(chromeCmd)#,stdout=log,stderr=errlog)
+    except FileNotFoundError:
+        printe("No file " + str(chromeCmd[0]) + " found")
+
     time.sleep(5)
 
     retries = 10
