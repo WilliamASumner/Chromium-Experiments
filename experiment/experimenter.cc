@@ -145,6 +145,8 @@ void experiment_init(const char *exec_name) {
         const std::lock_guard<std::mutex> lock(time_mut);
         clock_gettime(CLOCK_MONOTONIC,&page_start);
         set_sigint_hndlr();
+    } else {
+        experiment_mark_page_start();
     }
 
     char* ipc = getenv("IPC");
