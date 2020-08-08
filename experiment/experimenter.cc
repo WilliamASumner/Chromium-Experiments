@@ -4,6 +4,8 @@
 #include <iostream>
 #include <mutex>
 #include <string> // TODO update all refs to this
+
+#include <stack>
 #include <map> // map function names
 
 #include <unistd.h> // tid
@@ -25,7 +27,7 @@ std::atomic<int> timeout_s(45);
 
 static int pgid = 0;
 
-// TODO add queue for function timing (in case one is called inside of another)
+// TODO add stack for function timing (in case one is called inside of another)
 
 // TODO add function map
 
@@ -35,6 +37,7 @@ std::unique_ptr<g3::FileSinkHandle> handle = nullptr;
 thread_local struct timespec time_start,time_end;
 thread_local std::random_device rdev;
 thread_local std::mt19937 rng;
+thread_local std::stack<struct timespec> time_queue;
 
 const unsigned int ns_to_ms = 1000000;
 
@@ -231,10 +234,12 @@ void experiment_fentry(std::string func_name) {
     LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu();
 
     clock_gettime(CLOCK_MONOTONIC,&time_start);
+    time_queue.push_back(time_start); // save the time
 }
 
 void experiment_fexit(std::string func_name) {
     clock_gettime(CLOCK_MONOTONIC,&time_end);
+    time_start = time_queue.pop_back();
     double latency = ((double)time_end.tv_sec*1000 + (double)time_end.tv_nsec/ns_to_ms)
                         - ((double)time_start.tv_sec*1000 + (double)time_start.tv_nsec/ns_to_ms);
 
