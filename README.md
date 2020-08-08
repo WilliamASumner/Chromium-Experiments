@@ -34,7 +34,7 @@ sudo make install
 After that, using g3log in a project should be as easy as `#include`ing the right files and linking with `-lg3logger`. I'm not sure this is the proper way to do things since there was no mention of this in the repo, but it worked for this project.
 
 ## Explanation of files
-- `Makefile`: A makefile to simplify compiling/running experiments. `make run` will run an experiment, `make run-gui` an experiment with a graphical interface attached to chrome, etc. See additional targets in this file for more configurations.
+- `Makefile`: A makefile to simplify compiling/running experiments. `make run` will run an experiment, `make run-gui` will run an experiment with a graphical interface attached to chrome, etc. See additional targets in this file for more configurations.
 - `README.md`: This file.
 - `chrome-experimenter.py`: Uses PyChromeDevTools to time page loads. It closely mirrors (but not exactly) mirrors the usage of `run-chrome.sh`.
 - `chrome_includes/v8/`: Includes for datatypes in v8, needed for interposing some v8 functions
