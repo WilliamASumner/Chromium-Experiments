@@ -36,7 +36,7 @@ After that, using g3log in a project should be as easy as `#include`ing the righ
 ## Explanation of files
 - `Makefile`: A makefile to simplify compiling/running experiments. `make run` will run an experiment, `make run-gui` will run an experiment with a graphical interface attached to chrome, etc. See additional targets in this file for more configurations.
 - `README.md`: This file.
-- `chrome-experimenter.py`: Uses PyChromeDevTools to time page loads. It closely mirrors (but not exactly) mirrors the usage of `run-chrome.sh`.
+- `chrome-experimenter.py`: Uses PyChromeDevTools to time page loads. It closely (but not exactly) mirrors the usage of `run-chrome.sh`.
 - `chrome_includes/v8/`: Includes for datatypes in v8, needed for interposing some v8 functions
 - `chrome_intercept.cc`: Interposing functions, see the [table](https://github.com/WilliamASumner/Chromium-Experiments#interposed-functions) below
 - `experiment/`
@@ -44,23 +44,23 @@ After that, using g3log in a project should be as easy as `#include`ing the righ
     - `experimenter.*`: Functions for running/stopping experiments and logging
     - `interpose.hh`: From [ccurtsinger](https://github.com/ccurtsinger/interpose), for interposing \_libc\_start\_min
 - `misc/`
-    - `example`: Simple interposition example illustrating how interposing works
+    - `example`: Simple example illustrating how interposition works
     - `ipc-file.txt`: File layout for mmaped IPC (Python + Experiment Framework)
-    - `list-procs.sh`: A script to list "interesting" attributes of running chrome processes. This is mainly used for debugging affinity setting and checking how many renderers are actually alive
+    - `list-procs.sh`: A script to list "interesting" attributes of running chrome processes. This is mainly used for debugging affinity and checking how many renderers are alive
     - `mapping.sh`: A script for recording memory mappings of loaded libraries
     - `odroid-port`: Old Odroid scripts that are being ported for this project
     - `web-performace-syms.txt`: Mangled symbols of potential interest
     - `wget-script.sh`: Unfinished script to download webpages programmatically
-- `permutate.sh`: Generates core-configuration permutations for running experiments over a bunch of trials
+- `permutate.sh`: Generates core-configuration permutations for running experiments over multiple trials with randomized webpage/configuration ordering
 - `plotting/`
     - `occupany.py`: Plot occupancy over a page load
     - `processing.py`: Process data logs into an organized numpy array
-- `run-chrome.sh`: Bash script for running `chrome` (or `content\_shell`) with some options that help in debugging
-- `summarize.sh`: Generates the files `summary.log` and `func_latencies.log`. The former is a statistical overview of the function latencies and the latter is a cocatenation of all the data logs from a single experiment (this is used to generate a summary).
+- `run-chrome.sh`: Bash script for running `chrome` (or `content_shell`) with some options that help with debugging
+- `summarize.sh`: Generates the files `summary.log` and `func_latencies.log`. The former is a statistical overview of the function latencies and the latter is a concatenation of all the data logs from a single experiment (this is used to generate `summary.log`).
 - `todo.txt`: A simple todo list for myself
 
 ### Interposed Functions
-We've tracked down some interesting functions in the main phases of a chrome page load.
+We've tracked down some interesting functions in each of the phases of a chrome page load.
 These phases can happen out of this order in some cases, but this is the general flow.
 1. Parsing HTML
 2. Parsing CSS
@@ -69,7 +69,6 @@ These phases can happen out of this order in some cases, but this is the general
 5. JavaScript
 
 ## Currently Interposed Functions
-
 *Function* | *Phase*
 |------|----:|
 blink::HTMLParser::PumpPendingSpeculations | HTML
@@ -92,7 +91,7 @@ To run an experiment, it's as easy as:
 ```
 make run
 ```
-This will run `permutate.sh` with some default arguments. To run with custom settings, see `Makefile` for usage or [More help](#More-help). 
+This will run `permutate.sh` with some default arguments. To run with custom settings, see `Makefile` for usage or the ["more help"](#More-help section). 
 
 ### Changing log output
 Use: `make run PERM_PREFIX=YOUR_PREFIX` to change the prefix for the log files
