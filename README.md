@@ -4,7 +4,7 @@ The goal of this project is to increase the energy efficiency of mobile page loa
 
 ## What this repo is
 - A way of keeping track of what we've tried
-- A useful set of tools for running experiments that run by interposing important Chromium functions
+- A useful set of tools for running experiments that work by interposing important Chromium functions
 
 ## Prerequisites
 ### Things needed to run these experiments
