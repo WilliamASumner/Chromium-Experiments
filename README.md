@@ -11,14 +11,13 @@ The goal of this project is to increase the energy efficiency of mobile page loa
 - A Linux machine
 - `make`
 - ccurtsinger's [interposing header](https://github.com/ccurtsinger/interpose)
-- The [g3log](https://github.com/KjellKod/g3log) logger for data collection
-- The [PyChromeDevTools](https://github.com/marty90/PyChromeDevTools), see the repo for installation
-  details
+- [g3log](https://github.com/KjellKod/g3log) for data collection
+- [PyChromeDevTools](https://github.com/marty90/PyChromeDevTools), see the repo for installation details [^1]: At the time of writing, the PyChromeDevTools listed contain an error with the `wait_event` function that makes the recorded page load times much shorter than they normally would be. I've done a pull request to fix this issue, but if you're experiencing this issue check out [my version](https://github.com/WilliamASumner/PyChromeDevTools).
 
 ### Things that will make life easier
 - A checked out chromium repo, see the [instructions](https://chromium.googlesource.com/chromium/src/+/master/docs/linux/build_instructions.md). This will help in creating the proper mangled symbols
 - `nm` for reading the dynamic symbols in a binary
-- Zack's [guide](https://docs.google.com/document/d/1TVIYvACQTvLrhdRw6EelifGGxvcSxwn_mU4oUGVymFE/edit) for cross-compiling to ARM
+- [Zack's guide](https://docs.google.com/document/d/1TVIYvACQTvLrhdRw6EelifGGxvcSxwn_mU4oUGVymFE/edit) for cross-compiling to ARM
 
 ### g3log Installation
 To install g3log for use with this project, here's a quick intro.
@@ -35,21 +34,30 @@ sudo make install
 After that, using g3log in a project should be as easy as `#include`ing the right files and linking with `-lg3logger`. I'm not sure this is the proper way to do things since there was no mention of this in the repo, but it worked for this project.
 
 ## Explanation of files
+- `Makefile`: A makefile to simplify compiling/running experiments. `make run` will run an experiment, `make run-gui` an experiment with a graphical interface attached to chrome, etc. See additional targets in this file for more configurations.
+- `README.md`: This file.
+- `chrome-experimenter.py`: Uses PyChromeDevTools to time page loads. It closely mirrors (but not exactly) mirrors the usage of `run-chrome.sh`.
+- `chrome_includes/v8/`: Includes for datatypes in v8, needed for interposing some v8 functions
 - `chrome_intercept.cc`: Interposing functions, see the [table](https://github.com/WilliamASumner/Chromium-Experiments#interposed-functions) below
-- `chrome_includes/v8`: Includes for datatypes in v8, needed for interposing some v8 functions
-- `experiment`
-    - `cpu_utils`: Utility functions for setting affinity while running experiments
-    - `experimenter`: Functions for running/stopping experiments and logging
-    - `interpose.hh`: Credits to ccurtsinger, for interposing \_libc\_start\_min
-    - `mapping.sh`: A script for recording memory mappings of loaded libraries
-- `misc`
+- `experiment/`
+    - `cpu_utils.*`: Functions for setting affinity during experiments
+    - `experimenter.*`: Functions for running/stopping experiments and logging
+    - `interpose.hh`: From [ccurtsinger](https://github.com/ccurtsinger/interpose), for interposing \_libc\_start\_min
+- `misc/`
     - `example`: Simple interposition example illustrating how interposing works
+    - `ipc-file.txt`: File layout for mmaped IPC (Python + Experiment Framework)
+    - `list-procs.sh`: A script to list "interesting" attributes of running chrome processes. This is mainly used for debugging affinity setting and checking how many renderers are actually alive
+    - `mapping.sh`: A script for recording memory mappings of loaded libraries
     - `odroid-port`: Old Odroid scripts that are being ported for this project
-    - `thoughts.txt`: Collection of my thoughts as I've been working on this project
     - `web-performace-syms.txt`: Mangled symbols of potential interest
-- `permutate.sh`: Script that generates core-configuration permutations for running experiments over a bunch of trials
-- `process.py`: Python script for parsing/analyzing output logs
+    - `wget-script.sh`: Unfinished script to download webpages programmatically
+- `permutate.sh`: Generates core-configuration permutations for running experiments over a bunch of trials
+- `plotting/`
+    - `occupany.py`: Plot occupancy over a page load
+    - `processing.py`: Process data logs into an organized numpy array
 - `run-chrome.sh`: Bash script for running `chrome` (or `content\_shell`) with some options that help in debugging
+- `summarize.sh`: Generates the files `summary.log` and `func_latencies.log`. The former is a statistical overview of the function latencies and the latter is a cocatenation of all the data logs from a single experiment (this is used to generate a summary).
+- `todo.txt`: A simple todo list for myself
 
 ### Interposed Functions
 We've tracked down some interesting functions in the main phases of a chrome page load.
@@ -80,7 +88,7 @@ To implement interposition, we use the [`LD_PRELOAD`](http://www.goldsborough.me
 
 ---
 ## Running
-To run this file, it's as easy as:
+To run an experiment, it's as easy as:
 ```
 make run
 ```
@@ -90,13 +98,13 @@ This will run `permutate.sh` with some default arguments. To run with custom set
 Use: `make run PERM_PREFIX=YOUR_PREFIX` to change the prefix for the log files
 
 ## More help
-For usage:
+* For usage run:
 ```
 ./run-chrome.sh -h
 ./permutate.sh -h
+python3 chrome-experimenter.py -h or ./chrome-experimenter.py -h
 ```
-A simple example of interpostion:
-```
-example/
-```
-
+* A simple [example](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/misc/example) of interposition
+* [Example Data](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/logs/example_data) that is produced by the framework and the [format spec](https://github.com/WilliamASumner/Chromium-Experiments/blob/master/logs/format.md)
+* The [Chrome DevTools Protocol Docs](https://chromedevtools.github.io/devtools-protocol/) will help when working with `chrome-experimenter.py`
+* [How Blink Works](https://docs.google.com/document/d/1aitSOucL0VHZa9Z2vbRJSyAIsAz24kX8LFByQ5xQnUg/edit) and the [Chromium Design Docs](https://www.chromium.org/developers/design-documents) are great for learning what is actually going on inside of Chromium
