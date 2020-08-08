@@ -91,7 +91,7 @@ To run an experiment, it's as easy as:
 ```
 make run
 ```
-This will run `permutate.sh` with some default arguments. To run with custom settings, see `Makefile` for usage or the ["more help"](#More-help section). 
+This will run `permutate.sh` with some default arguments. To run with custom settings, see `Makefile` for usage or the ["more help"](#More-help) section. 
 
 ### Changing log output
 Use: `make run PERM_PREFIX=YOUR_PREFIX` to change the prefix for the log files
