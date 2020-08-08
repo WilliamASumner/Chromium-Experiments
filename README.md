@@ -1,6 +1,6 @@
 # Chrome Interposition Experiments
 ## Project Overview
-The goal of this project is to increase the energy efficiency of mobile page loads on heterogeneous platforms. We seek to interpose important functions in Chromium so that we can see the behavior of the system, adapt it to see the effect of certain core-configurations on performance/energy usage and ultimately develop a better method of assigning core configurations.
+The goal of this project is to increase the energy efficiency of mobile page loads on heterogeneous platforms. We seek to interpose important functions in Chromium so that we can monitor the behavior of the system, adapt it to see the effect of certain core-configurations on performance/energy usage and ultimately develop a better method of assigning core configurations.
 
 ## What this repo is
 - A way of keeping track of what we've tried
