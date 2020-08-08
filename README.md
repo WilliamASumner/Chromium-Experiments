@@ -10,7 +10,7 @@ The goal of this project is to increase the energy efficiency of mobile page loa
 ### Things needed to run these experiments
 - A Linux machine
 - `make`
-- ccurtsinger's [interposing header](https://github.com/ccurtsinger/interpose)
+- ccurtsinger's [interposing header](https://github.com/ccurtsinger/interpose) (included in this repo)
 - [g3log](https://github.com/KjellKod/g3log) for data collection
 - [PyChromeDevTools](https://github.com/marty90/PyChromeDevTools), see the repo for installation details<sup>1</sup> 
 
