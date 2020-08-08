@@ -104,7 +104,7 @@ Use: `make run PERM_PREFIX=YOUR_PREFIX` to change the prefix for the log files
 python3 chrome-experimenter.py -h or ./chrome-experimenter.py -h
 ```
 * For help with interposition check out this simple [example](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/misc/example)
-* For help with understanding the data produced see the [example data](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/logs/example_data) that is produced by the framework and the [format spec](https://github.com/WilliamASumner/Chromium-Experiments/blob/master/logs/format.md)
+* For help with understanding the data produced see the [example data](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/logs/example_data) and the [format spec](https://github.com/WilliamASumner/Chromium-Experiments/blob/master/logs/format.md)
 * The [Chrome DevTools Protocol Docs](https://chromedevtools.github.io/devtools-protocol/) will help when working with `chrome-experimenter.py`
 * [How Blink Works](https://docs.google.com/document/d/1aitSOucL0VHZa9Z2vbRJSyAIsAz24kX8LFByQ5xQnUg/edit) and the [Chromium Design Docs](https://www.chromium.org/developers/design-documents) are great for learning about Chromium's internals
 
