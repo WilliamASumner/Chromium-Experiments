@@ -1,15 +1,13 @@
 -------------
 High Priority
 -------------
-- (experiment.cc) queues for timing nested functions
-- (experiment.cc) function map
-    - probably want to create this in experiment_init
-    - use chrome-experimenter.py to generate hash for functions, sth faster than comparing strings
+- (experiment.cc) queues for timing nested functions (DONE, TEST)
+- (experiment.cc) function map + IPC
+    - use chrome-experimenter.py to generate hash for functions, sth faster than comparing strings maybe?
     - time IPC/affinity to see affect on performance
     - see ipc-file.txt
-- (experiment.cc + chrome-experimenter.py) get IPC working between python + exp framework
-    - create file structure: fentry mask, fexit mask, applicable functions
 - (experiment.cc + chrome-experimenter.py) figure out why chrome crashes on twitter...
+    - Test with -lNone repeatedly
 - (occupany.py + processing.py) get coz-like plots (big/little tradeoff) for each function
 
 -------------

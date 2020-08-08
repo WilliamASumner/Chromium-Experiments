@@ -33,6 +33,14 @@ sudo make install
 
 After that, using g3log in a project should be as easy as `#include`ing the right files and linking with `-lg3logger`. I'm not sure this is the proper way to do things since there was no mention of this in the repo, but it worked for this project.
 
+## Terminology
+* *experiment* - a single invocation of a script to produce data from 1+ page loads in Chromium
+* *affinity* - the set of cores that a process can be scheduled on
+* *(core) configuration* - same as *affinity*
+* *adaptation* - an alteration to the affinity of a process or several processes
+* *phase* - a period in program execution during which a process performs related tasks. An example could be the Layout phase of the browser in which offsets for various elements on a page are calculated.
+* *page load time* - Can have multiple meanings. The high-level definition is the time from when a page load starts to when it ends.  For `chrome-experimenter.py` it is the time from when a page is navigated to (i.e. the `frameNavigated` event) to when the `loadEventFired` event occurs. For `run-chrome.sh` or any experiment using the internal timing mode of the framework, the definition is the time from when the `experiment_mark_page_start` function is called to when the `experiment_mark_page_loaded` function is called, which is from the entry into `main` until `Document::SetReadyState` is called with an argument of `kComplete`.
+
 ## Explanation of files
 - `Makefile`: A makefile to simplify compiling/running experiments. `make run` will run an experiment, `make run-gui` will run an experiment with a graphical interface attached to chrome, etc. See additional targets in this file for more configurations.
 - `README.md`: This file.
@@ -43,6 +51,9 @@ After that, using g3log in a project should be as easy as `#include`ing the righ
     - `cpu_utils.*`: Functions for setting affinity during experiments
     - `experimenter.*`: Functions for running/stopping experiments and logging
     - `interpose.hh`: From [ccurtsinger](https://github.com/ccurtsinger/interpose), for interposing \_libc\_start\_min
+- `logs/`
+    - `format.md`: A description of all the log files produced
+    - `exp-*`: An experiment output
 - `misc/`
     - `example`: Simple example illustrating how interposition works
     - `ipc-file.txt`: File layout for mmaped IPC (Python + Experiment Framework)
