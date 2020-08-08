@@ -18,6 +18,8 @@ Med. Priority
 - (summarize.sh) update for new experiment folder structure
 - (occupany.py + processing.py) update for multiple iteration data (right now timestamps are not synced to iterations)
 - (README.md) update docs
+- (logs/example_data) update example data
+    - test graphing scripts with example_data
 
 -------------
 Low  Priority
