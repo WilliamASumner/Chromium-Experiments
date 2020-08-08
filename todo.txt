@@ -22,6 +22,7 @@ Med. Priority
 -------------
 Low  Priority
 -------------
+- (experiment/README.md) add a readme
 - (chrome-experimenter.py) add flag for exp dir renaming
 - (chrome-experimenter.py) add flag for headless rather than Xvfb (also compare the results)
 - (chrome-experimenter.py) find a better (shorter) name

@@ -47,14 +47,15 @@ After that, using g3log in a project should be as easy as `#include`ing the righ
 - `chrome-experimenter.py`: Uses PyChromeDevTools to time page loads. It closely (but not exactly) mirrors the usage of `run-chrome.sh`.
 - `chrome_includes/v8/`: Includes for datatypes in v8, needed for interposing some v8 functions
 - `chrome_intercept.cc`: Interposing functions, see the [table](https://github.com/WilliamASumner/Chromium-Experiments#interposed-functions) below
-- `experiment/`
+- `experiment/`: Everything related to the experiment framework itself
     - `cpu_utils.*`: Functions for setting affinity during experiments
     - `experimenter.*`: Functions for running/stopping experiments and logging
     - `interpose.hh`: From [ccurtsinger](https://github.com/ccurtsinger/interpose), for interposing \_libc\_start\_min
-- `logs/`
+    - `README.md`: Information on the design and use of the framework
+- `logs/`: Everything log related
     - `format.md`: A description of all the log files produced
     - `exp-*`: An experiment output
-- `misc/`
+- `misc/`: Items that don't fit anywhere else
     - `example`: Simple example illustrating how interposition works
     - `ipc-file.txt`: File layout for mmaped IPC (Python + Experiment Framework)
     - `list-procs.sh`: A script to list "interesting" attributes of running chrome processes. This is mainly used for debugging affinity and checking how many renderers are alive
@@ -63,12 +64,12 @@ After that, using g3log in a project should be as easy as `#include`ing the righ
     - `web-performace-syms.txt`: Mangled symbols of potential interest
     - `wget-script.sh`: Unfinished script to download webpages programmatically
 - `permutate.sh`: Generates core-configuration permutations for running experiments over multiple trials with randomized webpage/configuration ordering
-- `plotting/`
+- `plotting/`: Everything graph related
     - `occupany.py`: Plot occupancy over a page load
     - `processing.py`: Process data logs into an organized numpy array
 - `run-chrome.sh`: Bash script for running `chrome` (or `content_shell`) with some options that help with debugging
 - `summarize.sh`: Generates the files `summary.log` and `func_latencies.log`. The former is a statistical overview of the function latencies and the latter is a concatenation of all the data logs from a single experiment (this is used to generate `summary.log`).
-- `todo.txt`: A simple todo list for myself
+- `todo.txt`: A todo list for myself
 
 ### Interposed Functions
 We've tracked down some interesting functions in each of the phases of a chrome page load.
