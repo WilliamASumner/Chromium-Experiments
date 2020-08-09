@@ -236,12 +236,13 @@ void experiment_fentry(std::string func_name) {
     LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu();
 
     clock_gettime(CLOCK_MONOTONIC,&time_start);
-    time_queue.push_back(time_start); // save the time
+    time_queue.push(time_start); // save the time
 }
 
 void experiment_fexit(std::string func_name) {
     clock_gettime(CLOCK_MONOTONIC,&time_end);
-    time_start = time_queue.pop_back();
+    time_start = time_queue.top();
+    time_queue.pop();
     double latency = ((double)time_end.tv_sec*1000 + (double)time_end.tv_nsec/ns_to_ms)
                         - ((double)time_start.tv_sec*1000 + (double)time_start.tv_nsec/ns_to_ms);
 
