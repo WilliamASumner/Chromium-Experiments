@@ -119,6 +119,7 @@ python3 chrome-experimenter.py -h or ./chrome-experimenter.py -h
 * For help with understanding the data produced see the [example data](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/logs/example_data) and the [format spec](https://github.com/WilliamASumner/Chromium-Experiments/blob/master/logs/format.md)
 * The [Chrome DevTools Protocol Docs](https://chromedevtools.github.io/devtools-protocol/) will help when working with `chrome-experimenter.py`
 * [How Blink Works](https://docs.google.com/document/d/1aitSOucL0VHZa9Z2vbRJSyAIsAz24kX8LFByQ5xQnUg/edit) and the [Chromium Design Docs](https://www.chromium.org/developers/design-documents) are great for learning about Chromium's internals
+* [Debugging in Linux](https://chromium.googlesource.com/chromium/src/+/master/docs/linux/debugging.md) is a great resource for figuring out why Chromium is crashing
 
 ---
 1. At the time of writing, the PyChromeDevTools listed contain an error with the `wait_event` function that makes the recorded page load times much shorter than they normally would be. I've done a pull request to fix this issue, but if you're experiencing this issue check out [my version](https://github.com/WilliamASumner/PyChromeDevTools).
