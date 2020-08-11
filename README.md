@@ -46,7 +46,7 @@ After that, using g3log in a project should be as easy as `#include`ing the righ
 - `README.md`: This file.
 - `chrome-experimenter.py`: Uses PyChromeDevTools to time page loads. It closely (but not exactly) mirrors the usage of `run-chrome.sh`.
 - `chrome_includes/v8/`: Includes for datatypes in v8, needed for interposing some v8 functions
-- `chrome_intercept.cc`: Interposing functions, see the [table](https://github.com/WilliamASumner/Chromium-Experiments#interposed-functions) below
+- `chrome_interpose.cc`: Interposing functions, see the [table](https://github.com/WilliamASumner/Chromium-Experiments#interposed-functions) below
 - `experiment/`: Everything related to the experiment framework itself
     - `cpu_utils.*`: Functions for setting affinity during experiments
     - `experimenter.*`: Functions for running/stopping experiments and logging
@@ -95,7 +95,7 @@ blink::v8ScriptRunner::CallFunction | JavaScript
 ---
 
 ## Interposition
-To implement interposition, we use the [`LD_PRELOAD`](http://www.goldsborough.me/c/low-level/kernel/2016/08/29/16-48-53-the_-ld_preload-_trick/) trick. The idea is to get create a shared library whose function signatures match the desired interposition targets exactly, so that when `ld` looks for a dynamic function, your function gets loaded first. To call the original function as if nothing has happened, you can get a handle by using `dlsym(RTLD_NEXT,"binary_function_name")`. **It is important to note that for C++ functions the exact signature of the target needs to be replicated including namespace and arguments.** This is due to [name mangling](https://en.wikipedia.org/wiki/Name_mangling). C++ methods also require an explicit `this` argument to the original handle, unless you're interposing a method declared as `static`. See `chrome_intercept.cc` for examples of this.
+To implement interposition, we use the [`LD_PRELOAD`](http://www.goldsborough.me/c/low-level/kernel/2016/08/29/16-48-53-the_-ld_preload-_trick/) trick. The idea is to get create a shared library whose function signatures match the desired interposition targets exactly, so that when `ld` looks for a dynamic function, your function gets loaded first. To call the original function as if nothing has happened, you can get a handle by using `dlsym(RTLD_NEXT,"binary_function_name")`. **It is important to note that for C++ functions the exact signature of the target needs to be replicated including namespace and arguments.** This is due to [name mangling](https://en.wikipedia.org/wiki/Name_mangling). C++ methods also require an explicit `this` argument to the original handle, unless you're interposing a method declared as `static`. See `chrome_interpose.cc` for examples of this.
 
 ---
 ## Running
