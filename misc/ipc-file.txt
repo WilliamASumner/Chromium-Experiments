@@ -1,7 +1,7 @@
 --------------------------
 Example IPC file structure
 --------------------------
-10 // number of entries
+10 // number of function sets
 //Entry 1
 00001111 // fentry mask
 11110000 // fexit mask
