@@ -15,7 +15,7 @@ The goal of this project is to increase the energy efficiency of mobile page loa
 - [PyChromeDevTools](https://github.com/marty90/PyChromeDevTools), see the repo for installation details<sup>1</sup> 
 
 ### Things that will make life easier
-- A checked out chromium repo, see the [instructions](https://chromium.googlesource.com/chromium/src/+/master/docs/linux/build_instructions.md). This will help in creating the proper mangled symbols
+- A checked out chromium repo, see the [instructions](https://chromium.googlesource.com/chromium/src/+/master/docs/linux/build_instructions.md). This will help in creating the proper mangled symbols. The version I'm testing with is Chromium 82.0.4063.0
 - `nm` for reading the dynamic symbols in a binary
 - [Zack's guide](https://docs.google.com/document/d/1TVIYvACQTvLrhdRw6EelifGGxvcSxwn_mU4oUGVymFE/edit) for cross-compiling to ARM
 
@@ -116,7 +116,7 @@ Use: `make run PERM_PREFIX=YOUR_PREFIX` to change the prefix for the log files
 python3 chrome-experimenter.py -h or ./chrome-experimenter.py -h
 ```
 * For help with interposition check out this simple [example](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/misc/example)
-* For help with understanding the data produced see the [example data](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/logs/example_data) and the [format spec](https://github.com/WilliamASumner/Chromium-Experiments/blob/master/logs/format.md)
+* For help with understanding the data produced see the [example data](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/logs/example_data) and the [format description](https://github.com/WilliamASumner/Chromium-Experiments/blob/master/logs/format.md)
 * The [Chrome DevTools Protocol Docs](https://chromedevtools.github.io/devtools-protocol/) will help when working with `chrome-experimenter.py`
 * [How Blink Works](https://docs.google.com/document/d/1aitSOucL0VHZa9Z2vbRJSyAIsAz24kX8LFByQ5xQnUg/edit) and the [Chromium Design Docs](https://www.chromium.org/developers/design-documents) are great for learning about Chromium's internals
 * [Debugging in Linux](https://chromium.googlesource.com/chromium/src/+/master/docs/linux/debugging.md) is a great resource for figuring out why Chromium is crashing
