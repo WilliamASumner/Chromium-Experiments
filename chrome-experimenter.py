@@ -19,6 +19,7 @@ import src.python.ipc as ipc         # IPC interface
 expInt = ipc.ExperimentInterface()
 
 # Create function sets
+print(ipc.paint)
 bigToAll = ipc.FunctionSet((0,4),(4,4),ipc.layout + ipc.paint + ipc.js)
 littleToAll = ipc.FunctionSet((4,0),(4,4),ipc.css + ipc.html)
 
@@ -315,12 +316,13 @@ with open(pageLoadLog,'w') as pageLoadsLog:
     for pageLoadId,pageLoadData in loadTimes.items():
         pageLoadsLog.write(",".join([str(item) for item in pageLoadData]))
 
-printv("Running summarize.sh on experiment",args.verbose)
-os.environ['EXP_DATALOG_DIR'] = expDirName
-subprocess.run(['./src/scripts/summarize.sh']) # Run datamash summary script
+if not args.no_logs:
+    printv("Running summarize.sh on experiment",args.verbose)
+    os.environ['EXP_DATALOG_DIR'] = expDirName
+    subprocess.run(['./src/scripts/summarize.sh']) # Run datamash summary script
 
 # Example graph generation
-if args.plot_graphs:
+if args.plot_graphs and not args.no_logs:
     printv("Running occupancy.py on experiment",args.verbose)
     os.environ['DATA_FILES'] = f"{expDirName}/data*.log"
     subprocess.run(['./src/python/plotting/occupancy.py'])
