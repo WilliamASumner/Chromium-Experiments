@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LD_PRELOAD_VAL=$PWD/libintercept.so
+LD_PRELOAD_VAL=$PWD/bin/libintercept.so
 #export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 XVFB_PID=`pgrep Xvfb`
 BINARY=chrome

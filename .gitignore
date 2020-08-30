@@ -8,3 +8,4 @@ logs/
 tags
 test/
 __pycache__/
+bin/

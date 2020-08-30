@@ -244,8 +244,14 @@ void experiment_mark_page_loaded() {
 
 void experiment_fentry(std::string func_name) {
     unsigned int tid = syscall(SYS_gettid);
+#ifdef RUNCHROME_MODE
+#warning older version RUNCHROME_MODE
+    cpu_set_t mask;
+    set_affinity_permute(&mask,rng,experiment_config.nbigs,experiment_config.nlils);
+#else
     cpu_set_t mask = fmap[func_name].first;
     set_affinity_with_mask(&mask);
+#endif 
     LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu();
 
     clock_gettime(CLOCK_MONOTONIC,&time_start);
@@ -260,7 +266,12 @@ void experiment_fexit(std::string func_name) {
                         - ((double)time_start.tv_sec*1000 + (double)time_start.tv_nsec/ns_to_ms);
 
     unsigned int tid = syscall(SYS_gettid);
+#ifdef RUNCHROME_MODE
+    cpu_set_t mask;
+    set_affinity_all(&mask);
+#else
     cpu_set_t mask = fmap[func_name].second;
     set_affinity_with_mask(&mask);
+#endif
     LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu() << "\t" << latency;
 }

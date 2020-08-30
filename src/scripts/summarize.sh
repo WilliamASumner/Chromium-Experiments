@@ -2,13 +2,22 @@
 
 FUNC_LOG="func_latencies.log"
 SUMMARY_LOG="summary.log"
-LOG_DIR="$PWD/logs/"
-EMPTY_FILES=`find $LOG_DIR -size 0`
+if [ -z $EXP_DATALOG_DIR ]; then
+    EXP_DATALOG_DIR="$PWD/logs/"
+fi
+EMPTY_FILES=`find $EXP_DATALOG_DIR -size 0`
 if [[ "$EMPTY_FILES" != "" ]]; then
-    find $LOG_DIR -size 0 | xargs rm || true # remove empty entries, some processes quit before they can log
+    find $EXP_DATALOG_DIR -size 0 | xargs rm || true # remove empty entries, some processes quit before they can log
 fi
 
-cd $LOG_DIR
+cd $EXP_DATALOG_DIR
+rm $SUMMARY_LOG 2>/dev/null
+rm $FUNC_LOG 2>/dev/null
+ls *.log &>/dev/null
+if [ $? -ne 0 ]; then
+    echo "Error: No logs files found."
+    exit 1
+fi
 echo -n "" > $FUNC_LOG
 
 # Generate function latency list

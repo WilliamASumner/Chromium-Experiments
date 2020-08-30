@@ -1,5 +1,5 @@
 import random
-from convenience import maskFromConfig
+from .convenience import maskFromConfig
 class FunctionSet:
     """
     A set of functions that are associated with specific entry and exit configurations.

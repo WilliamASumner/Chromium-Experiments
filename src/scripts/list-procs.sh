@@ -11,7 +11,7 @@ echo_usage() {
     echo "-v : verbose,     output commands run. Default is off"
     echo "-c : cmdline,     show the command line args"
     echo "-r : renderers,   show only the renderer processes"
-    echo "-r : refresh,     repeatedly output for a refreshing display"
+    echo "-F : refresh,     repeatedly output for a refreshing display"
     #echo "-b : browser,     show only the main browser process"
     #echo "-g : gpu,     show only the gpu process"
     #echo "-u : utility,     show only the utility process"
@@ -59,19 +59,26 @@ while getopts ":hvcraF" opt; do
     esac
 done
 
-run_main() {
+display_procs() {
+    PROCS=`pgrep -x chrome`
+    if [ -z "$PROCS" ]; then
+        clear_screen
+    fi
+
+    # Display Header
     if [[ "$RENDERERS_ONLY" == "on" ]]; then
         echo -n "Only Renderers: 'on'"
     else
         echo -n "Only Renderers: 'off'"
     fi
     if [[ "$CMDLINE_INFO" == "on" ]]; then
-        echo " Commandline Info: 'on'"
+        echo -n " Commandline Info: 'on'"
     else
-        echo " Commandline Info: 'off'"
+        echo -n " Commandline Info: 'off'"
     fi
 
-    PROCS=`pgrep -x chrome`
+    echo " Press 'q' to quit"
+
     if [ -z "$PROCS" ]; then
         echo "No processes"
     else
@@ -86,7 +93,7 @@ run_main() {
             fi
 
             if [[ "$EXTRA_INFO" == "on" ]]; then
-                echo -ne "$i:\t"
+                echo -ne "$i:    "
             else
                 echo -ne "$i"
             fi
@@ -117,25 +124,34 @@ clear_screen() {
     clear
 }
 
+home() {
+    tput home
+}
+
 cleanup() {
     clear
+    tput cvvis
     exit
 }
 trap cleanup SIGINT
 
 clear_screen
+tput civis
 
 while [[ "$CONTINUOUS_MODE" == "on" ]]; do
-    run_main
-    read -t 0.5 -N 1 input
-    clear_screen
+    display_procs
+    read -t 0.25 -N 1 input
+    home
     if [[ "$input" == "q" ]] || [[ "$input" == "Q" ]]; then
-        exit
+        CONTINUOUS_MODE="off"
     elif [[ "$input" == "c" ]] || [[ "$input" == "C" ]]; then
         CMDLINE_INFO=`toggle "$CMDLINE_INFO"`
+        clear_screen
     elif [[ "$input" == "r" ]] || [[ "$input" == "R" ]]; then
         RENDERERS_ONLY=`toggle "$RENDERERS_ONLY"`
+        clear_screen
     fi
 done
 
-run_main
+display_procs
+cleanup

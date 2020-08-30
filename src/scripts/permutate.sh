@@ -9,7 +9,7 @@ declare -a configs governors iterconfig itergovernor sites # declare arrays
 #configs=("4l-0b" "4l-4b" "0l-4b" "4l-1b" "4l-2b" "2l-0b" "1l-0b" "0l-1b" "0l-2b") # all core configs to test with
 configs=("4l-0b") # all core configs to test with
 governors=("pi" "ii" "ip" "pp") # all core configs to test with
-sites=("cnn.com")
+sites=( "wikipedia.org" )
 
 array_contains () {
     local array="$1[@]"
@@ -92,6 +92,8 @@ echo_usage() {
     echo "-v : Verbose,    run with verbose output"
     echo "Predefined values: +url = url, +site = website, +gov = freq gov, +iter = iteration, +config = core configuration"
     echo "Note: the site keyword returns a trimmed value of the url: 'http://www.example.com' -> 'example' for compactness"
+
+    echo -e "\nTo configure the configurations/sites used by this script, edit the 'configs' and 'sites' variables at the top of the script"
     exit 0
 }
 

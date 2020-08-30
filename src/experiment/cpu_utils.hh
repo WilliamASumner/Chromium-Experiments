@@ -13,7 +13,7 @@ void set_affinity_big(cpu_set_t* mask);
 
 void set_affinity_all(cpu_set_t* mask);
 
-void set_affinity_permute(cpu_set_t* mask, std::mt19937 rng, int bigs, int lils);
+void set_affinity_permute(cpu_set_t* mask, std::mt19937& rng, int bigs, int lils);
 
 void set_affinity_with_mask(cpu_set_t* mask);
 

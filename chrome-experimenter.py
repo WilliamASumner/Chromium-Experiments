@@ -12,8 +12,8 @@ import argparse           # argument parsing
 import shlex              # shell arg parsing
 
 
-from convenience import * # convenience functions
-import ipc                # IPC interface
+from src.python.convenience import * # convenience functions
+import src.python.ipc as ipc         # IPC interface
 
 # Experiment Setup
 expInt = ipc.ExperimentInterface()
@@ -68,8 +68,8 @@ pageLoadLog = f'{expDirName}/pageloads.log'
 os.environ['TIMING'] = "external" # don't use internal timer (otherwise the exp lib will kill chrome)
 os.environ['IPC'] = "on" # use IPC to communicate dynamically rather than env vars
 os.environ['MMAP_FILE'] = mFilename # set mmap file to be used
-if os.path.exists(f"{pwd}/{interceptLibName}"):
-    os.environ['LD_PRELOAD'] = f"{pwd}/{interceptLibName}"
+if os.path.exists(f"{pwd}/bin/{interceptLibName}"):
+    os.environ['LD_PRELOAD'] = f"{pwd}/bin/{interceptLibName}"
 else:
     raise FileNotFoundError(f"No library {pwd}/{interceptLibName}")
 os.environ['LOG_FILE'] = f"{expDirName}/data"
@@ -313,3 +313,7 @@ with open(mFilename, "r+b")  as mfile, \
 with open(pageLoadLog,'w') as pageLoadsLog:
     for pageLoadId,pageLoadData in loadTimes.items():
         pageLoadsLog.write(",".join([str(item) for item in pageLoadData]))
+
+printv("Running summarize.sh on experiment",args.verbose)
+os.environ['EXP_DATALOG_DIR'] = expDirName
+subprocess.run(['./src/scripts/summarize.sh']) # Run datamash summary script
