@@ -38,6 +38,7 @@ parser.add_argument("-s","--single-process",help="run chromium in a single proce
 parser.add_argument("--disable-cache",help="disable cache across page loads",action="store_true")
 parser.add_argument("--interactive",help="wait for user input to continue",action="store_true")
 parser.add_argument("--just-mmap",help="only create mmap file then exit",action="store_true")
+parser.add_argument("--plot-graphs",help="Generate occupancy graphs of the collected data",action="store_true")
 parser.add_argument("-c","--renderer-cmd-prefix",help="prefix to be inserted before renderer process creation",nargs=1, type=str)
 parser.add_argument("-r","--rng-seed",help="set a RNG seed for repeatable results",nargs=1,type=int)
 parser.add_argument("-t","--timeout",help="set timeout for page loads",nargs=1,type=int)
@@ -317,3 +318,9 @@ with open(pageLoadLog,'w') as pageLoadsLog:
 printv("Running summarize.sh on experiment",args.verbose)
 os.environ['EXP_DATALOG_DIR'] = expDirName
 subprocess.run(['./src/scripts/summarize.sh']) # Run datamash summary script
+
+# Example graph generation
+if args.plot_graphs:
+    printv("Running occupancy.py on experiment",args.verbose)
+    os.environ['DATA_FILES'] = f"{expDirName}/data*.log"
+    subprocess.run(['./src/python/plotting/occupancy.py'])
