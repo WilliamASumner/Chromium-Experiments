@@ -18,3 +18,6 @@ The behavior of the framework is configurable through several environment variab
 - `IPC` : `string` - Determines whether an mmaped IPC file is checked during execution. Values can be "on" for using the IPC file, or unset/any other value to use the `CORE_CONFIG` variable.
 - `MMAP_FILE`: `filename` - The name of the ipc file to use if `IPC` is set to "on".
 - `LOG_FILE` : `filename` - Determines the logfile name. Can either be a filename or a filename with a directory. If no directory precedes the filename, the directory `home/vagrant/research/interpose/logs/` is used. Note you may need to change this default value in `experimenter.cc` for this behavior to work on your system.
+
+## Data Output
+This framework generates a potentially large number of g3log files, one for each process initialized by the framework. Sometimes no targeted functions are run and the log file is empty. The basic format is described in `format.md`. Note: Only when the framework is compiled with `-DRUNCHROME_MODE` will the data output include the internal page timing entries, otherwise page load times will be collected by `chrome-experimenter.py` and saved in the file `pageloads.log`.

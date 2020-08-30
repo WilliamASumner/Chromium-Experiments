@@ -7,16 +7,12 @@ High Priority
 Med. Priority
 -------------
 - (occupany.py + processing.py) update for multiple iteration data (right now timestamps are not synced to iterations)
-- (README.md) update docs
-- (logs/example_data) update example data
-    - test graphing scripts with example_data
+- (all files) Time the framework against -lNone to see if there's any noticable affect on page load time
 
 -------------
 Low  Priority
 -------------
 - (chrome-experimenter.py) add flag for headless rather than Xvfb (also compare the results)
-- (chrome-experimenter.py) find a better (shorter) name
-- (all files) clean up/comment for clarity
 - (experiment.cc + chrome-experimenter.py) figure out why chrome crashes on twitter...
     - Test with -lNone repeatedly
-- (summarize.sh) update for new experiment folder structure
+- (chrome-experimenter.py) find a better (shorter) name

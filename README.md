@@ -124,6 +124,8 @@ python3 chrome-experimenter.py -h or ./chrome-experimenter.py -h
 ./run-chrome.sh -h
 ./permutate.sh -h
 ```
+* To determine whether an issue is due to Chromium or the framework, try running with `./chrome-experimenter.py` or `./run-chrome.sh` with `-lNone`. This will prevent LD\_PRELOAD from loading the framework.
+* Running the `list-procs.sh` script in a seperate terminal can help with debugging affinity issues, especially when run as `./list-procs.sh -aF`, which refreshes the display.
 * For help with interposition check out this simple [example](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/misc/example)
 * For help with understanding the data produced see the [example data](https://github.com/WilliamASumner/Chromium-Experiments/tree/master/logs/example_data) and the [format description](https://github.com/WilliamASumner/Chromium-Experiments/blob/master/logs/format.md)
 * The [Chrome DevTools Protocol Docs](https://chromedevtools.github.io/devtools-protocol/) will help when working with `chrome-experimenter.py`
