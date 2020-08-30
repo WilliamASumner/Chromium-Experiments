@@ -26,6 +26,8 @@ echo_usage() {
     echo "-w : [webpage],   changes default page to be loaded. Default is '$WEBPAGE'"
     echo "-f : [flags],     changes Chromium flags. Default is '$FLAGS'. Prefix your flags with 'clear:' to completely override."
     echo "                  E.g. 'clear: --no-sandbox' will create the command '$CHROME_DIR/$BINARY --no-sandbox $WEBPAGE'"
+    echo -e "\nTo change which core configurations the C++ experimental framework uses, modify the env variable CORE_CONFIG. To configure where output is directed, modify the env variable LOG_FILE."
+    echo "Note: Not specifying LOG_FILE will place output in the cwd (something you want to avoid). Not specifying CORE_CONFIG while using this script will result in an error."
     exit 0
 }
 
@@ -49,7 +51,6 @@ while getopts ":hpgvib:d:l:w:f:" opt; do
             FLAGS="$FLAGS --enable--logging=stderr --v=1"
             CHROME_VERBOSE=1
             ;;
-
         b)
             BINARY="$OPTARG"
             ;;
