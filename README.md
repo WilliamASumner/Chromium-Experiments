@@ -44,9 +44,6 @@ make run-sh
 ```
 This will run `permutate.sh` with some default arguments. To run with custom settings, see `Makefile` for usage or the ["more help"](#More-help) section.
 
-### Changing log output
-Use: `make run PERM_PREFIX=YOUR_PREFIX` to change the prefix for the log files
-
 ## Data Analysis
 `processing.py` will generate a nice numpy array which you can use to analyze the data however you see fit, `occupancy.py` is a simple example of using matplotlib with the numpy array and `summarize.sh` generates a `summary.log` file which contains various summary statistics.
 
