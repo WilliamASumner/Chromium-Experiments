@@ -61,12 +61,8 @@ void sigint_handler(int sig) {
 }
 
 void sigcont_handler(int sig) {
-    fprintf(stderr,"experimenter.cc: ");
-    fprintf(stderr,"Received sigcont, updating functionmap\n");
-    {
-        const std::lock_guard<std::mutex> lock(fmap_mut);
-        ipc_update_funcmap(fmap);
-    }
+    const std::lock_guard<std::mutex> lock(fmap_mut);
+    ipc_update_funcmap(fmap);
 }
 
 void set_config(const char* config) {
