@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 import matplotlib.pyplot as plt
 import numpy as np
-from processing import gen_data_matrix
+if __name__ == "__main__":
+    from processing import gen_data_matrix
+else:
+    from .processing import gen_data_matrix
 
 def generate_heatmap(data,x_labels,y_labels,ax=None,
         cbar_kw={},cbarlabel="", **kwargs):
