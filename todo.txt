@@ -1,19 +1,11 @@
 -------------
 High Priority
 -------------
-- (experiment.cc) queues for timing nested functions (DONE, TEST)
-- (experiment.cc) function map + IPC
-    - use chrome-experimenter.py to generate hash for functions, sth faster than comparing strings maybe?
-    - time IPC/affinity to see affect on performance
-    - see ipc-file.txt
-- (experiment.cc + chrome-experimenter.py) figure out why chrome crashes on twitter...
-    - Test with -lNone repeatedly
 - (occupany.py + processing.py) get coz-like plots (big/little tradeoff) for each function
 
 -------------
 Med. Priority
 -------------
-- (summarize.sh) update for new experiment folder structure
 - (occupany.py + processing.py) update for multiple iteration data (right now timestamps are not synced to iterations)
 - (README.md) update docs
 - (logs/example_data) update example data
@@ -22,8 +14,9 @@ Med. Priority
 -------------
 Low  Priority
 -------------
-- (experiment/README.md) add a readme
-- (chrome-experimenter.py) add flag for exp dir renaming
 - (chrome-experimenter.py) add flag for headless rather than Xvfb (also compare the results)
 - (chrome-experimenter.py) find a better (shorter) name
 - (all files) clean up/comment for clarity
+- (experiment.cc + chrome-experimenter.py) figure out why chrome crashes on twitter...
+    - Test with -lNone repeatedly
+- (summarize.sh) update for new experiment folder structure

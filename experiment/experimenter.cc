@@ -3,10 +3,9 @@
 #include <string.h>
 #include <iostream>
 #include <mutex>
-#include <string> // TODO update all refs to this
+#include <string>
 
 #include <stack>
-#include <map> // map function names
 
 #include <unistd.h> // tid
 #include <sys/syscall.h> // get tid
@@ -15,21 +14,19 @@
 #include <random>
 
 #include"cpu_utils.hh" // affinity functions
+#include "ipc.hh"
 #include "experimenter.hh"
 
 #include <g3log/g3log.hpp> // logger
 #include <g3log/logworker.hpp>
 
 
-std::mutex time_mut, config_mut, start_mut;
-std::atomic<bool> did_start(false), page_loaded(false), config_set(false), page_started(false), external_timing(false);
-std::atomic<int> timeout_s(45);
-
+static std::mutex time_mut, config_mut, start_mut, fmap_mut;
+static std::atomic<bool> did_start(false), page_loaded(false), config_set(false), page_started(false), external_timing(false);
+static std::atomic<int> timeout_s(45);
 static int pgid = 0;
 
-// TODO add stack for function timing (in case one is called inside of another)
-
-// TODO add function map
+static FuncMapType fmap;
 
 std::unique_ptr<g3::LogWorker> worker = nullptr;
 std::unique_ptr<g3::FileSinkHandle> handle = nullptr;
@@ -54,12 +51,22 @@ void sigalrm_handler( int sig) {
     int result = killpg(pgid,SIGINT);
     if (result != 0) {
         fprintf(stderr,"experimenter.cc: ");
-        fprintf(stderr,"Error killing process group: %d;%d",pgid,result);
+        fprintf(stderr,"Error: could not kill process group: %d;%d\n",pgid,result);
     }
 }
 
 void sigint_handler(int sig) {
     experiment_stop();
+    ipc_close_mmap();
+}
+
+void sigcont_handler(int sig) {
+    fprintf(stderr,"experimenter.cc: ");
+    fprintf(stderr,"Received sigcont, updating functionmap\n");
+    {
+        const std::lock_guard<std::mutex> lock(fmap_mut);
+        ipc_update_funcmap(fmap);
+    }
 }
 
 void set_config(const char* config) {
@@ -68,7 +75,7 @@ void set_config(const char* config) {
     int lils = config[3] - '0';
     if (bigs > 4 || bigs < 0 || lils > 4 || lils < 0) {
         fprintf(stderr,"experimenter.cc: ");
-        fprintf(stderr,"Error: invalid CORE_CONFIG '%s'",config);
+        fprintf(stderr,"Error: invalid CORE_CONFIG '%s'\n",config);
     }
 
     const std::lock_guard<std::mutex> lock(config_mut);
@@ -99,6 +106,14 @@ void set_sigint_hndlr() {
     sigaction(SIGINT, &sact, NULL);
 }
 
+void set_sigcont_hndlr() {
+    struct sigaction sact;
+    sigemptyset(&sact.sa_mask);
+    sact.sa_flags = 0;
+    sact.sa_handler = sigcont_handler;
+    sigaction(SIGCONT, &sact, NULL);
+}
+
 void experiment_start_timer() {
     struct sigaction sact;
     sigemptyset(&sact.sa_mask);
@@ -114,6 +129,8 @@ void experiment_start_timer() {
 void experiment_init(const char *exec_name) {
     const std::lock_guard<std::mutex> lock(start_mut);
     if (did_start) {
+        fprintf(stderr,"experimenter.cc: ");
+        fprintf(stderr,"Already initialized... exiting\n");
         return;
     }
 
@@ -145,14 +162,13 @@ void experiment_init(const char *exec_name) {
         const std::lock_guard<std::mutex> lock(time_mut);
         clock_gettime(CLOCK_MONOTONIC,&page_start);
         set_sigint_hndlr();
+        set_sigcont_hndlr();
     } else {
         experiment_mark_page_start();
     }
 
     char* ipc = getenv("IPC");
     if (ipc != nullptr && strncmp(ipc,"on",3) == 0) { // default to non-IPC
-        // setup IPC
-        //do_ipc = true;
 
         char* mmap_file = getenv("MMAP_FILE");
         if (mmap_file == nullptr) {
@@ -160,7 +176,8 @@ void experiment_init(const char *exec_name) {
             fprintf(stderr,"Error: no MMAP_FILE defined\n");
             exit(1);
         }
-
+        ipc_open_mmap(mmap_file); // TODO figure out where to put ipc_close_mmap
+        ipc_update_funcmap(fmap);
     }
 
     char* env_log = getenv("LOG_FILE");
@@ -231,8 +248,8 @@ void experiment_mark_page_loaded() {
 
 void experiment_fentry(std::string func_name) {
     unsigned int tid = syscall(SYS_gettid);
-    cpu_set_t mask;
-    set_affinity_little(&mask);
+    cpu_set_t mask = fmap[func_name].first;
+    set_affinity_with_mask(&mask);
     LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu();
 
     clock_gettime(CLOCK_MONOTONIC,&time_start);
@@ -247,7 +264,7 @@ void experiment_fexit(std::string func_name) {
                         - ((double)time_start.tv_sec*1000 + (double)time_start.tv_nsec/ns_to_ms);
 
     unsigned int tid = syscall(SYS_gettid);
-    cpu_set_t mask;
-    set_affinity_all(&mask);
+    cpu_set_t mask = fmap[func_name].second;
+    set_affinity_with_mask(&mask);
     LOG(INFO) << tid << ":\t" << func_name << "\t" << mask_to_str(mask) << "\t" << get_curr_cpu() << "\t" << latency;
 }

@@ -3,6 +3,7 @@
 #include "cpu_utils.hh"
 #include <random> // better than rand()
 #include <sched.h>
+#include <string>
 
 void set_affinity_little(cpu_set_t* mask) {
     CPU_ZERO(mask);
@@ -73,6 +74,16 @@ void print_mask(cpu_set_t* mask, int cpus) {
         else
             printf("0");
     }
+}
+
+cpu_set_t mask_from_str(std::string& s) {
+    cpu_set_t mask;
+    CPU_ZERO(&mask);
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] == '1')
+            CPU_SET(i,&mask);
+    }
+    return mask;
 }
 
 unsigned int get_curr_cpu() {

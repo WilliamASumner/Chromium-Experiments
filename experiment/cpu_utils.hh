@@ -19,6 +19,8 @@ void set_affinity_with_mask(cpu_set_t* mask);
 
 void print_mask(cpu_set_t* mask, int cpus);
 
+cpu_set_t mask_from_str(std::string& s);
+
 unsigned int get_curr_cpu();
 
 #endif
