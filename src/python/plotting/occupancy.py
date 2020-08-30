@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 import matplotlib.pyplot as plt
 import numpy as np
 from processing import gen_data_matrix
@@ -88,7 +88,7 @@ if __name__ == "__main__":
 #num_ticks = 5
 #timestamp_ticks = np.arange(0,end_time + end_time/num_ticks,end_time/num_ticks)
 #
-#unqiue_threads,indices = np.unique(data['TID0'],return_inverse=True)
+#unique_threads,indices = np.unique(data['TID0'],return_inverse=True)
 #
 #cores = ["Core " + str(i) for i in range(8)]
 #
