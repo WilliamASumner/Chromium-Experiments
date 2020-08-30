@@ -60,7 +60,7 @@ def gen_data_matrix(trimLatency=False):
         filenames = filenames.split()
 
     for filename in filenames:
-        print(filename)
+        print("processing.py: working on file '" + filename + "'")
         with open(filename) as f:
             for i,line in enumerate(f):
                 if (i < 4): # skip first 4 lines, header info
