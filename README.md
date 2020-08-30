@@ -85,10 +85,12 @@ This will run `permutate.sh` with some default arguments. To run with custom set
     - `format.md`: A description of all the log files produced
     - `exp-*`: An experiment output
 - `misc/`: Items that don't fit anywhere else
-    - `example`: Simple example illustrating how interposition works
+    - `example/`: Simple example illustrating how interposition works
+    - `odroid-port/`: Previous experiments run on the old odroid board
+    - `timing-bench.cpp`: A quick timing bench for measuring code performance
     - `ipc-file.txt`: File layout for mmaped IPC (Python + Experiment Framework)
     - `web-performace-syms.txt`: Mangled symbols of potential interest
-- `todo.txt`: A todo list for myself
+- `todo.txt`: A todo list
 
 ### Interposed Functions
 We've tracked down some interesting functions in each of the phases of a chrome page load.
