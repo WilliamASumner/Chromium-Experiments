@@ -2,6 +2,7 @@
 High Priority
 -------------
 - (occupany.py + processing.py) get coz-like plots (big/little tradeoff) for each function
+    - (occupany.py + processing.py + chrome-experimenter.py) divy up data according to timestamps (i.e. between pageloads)
 
 -------------
 Med. Priority
@@ -14,5 +15,5 @@ Low  Priority
 -------------
 - (chrome-experimenter.py) add flag for headless rather than Xvfb (also compare the results)
 - (experiment.cc + chrome-experimenter.py) figure out why chrome crashes on twitter...
-    - Test with -lNone repeatedly
 - (chrome-experimenter.py) find a better (shorter) name
+- (run-chrome.sh) - output to exp dir inside logs/ instead of directly to logs/
