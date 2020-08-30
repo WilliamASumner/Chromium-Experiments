@@ -26,14 +26,13 @@ def generate_lineplot(x,y,x_labels,y_labels,ax=None, **kwargs):
     if not ax:
         ax = plt.gca()
 
-    p = ax.scatter(x,y,**kwargs)
+    p = ax.plot(x,y,**kwargs)
     ax.set_xlabel(x_labels)
     ax.set_ylabel(y_labels)
 
     return ax
 
-
-if __name__ == "__main__":
+def demo():
     print("Gathering data...")
     data = gen_data_matrix()
     print("Plotting data...")
@@ -48,13 +47,15 @@ if __name__ == "__main__":
     for i,tid in enumerate(tids):
         data_tid = data[data['tid'] == tid]
         data_tid['time_ms'] -= np.min(data['time_ms'])
-        ax = generate_lineplot(data_tid['time_ms'],data_tid['core'],'Time(ms)','Core ID',ax=ax)#,color=tid_cols[i])
+        #ax = generate_lineplot(data_tid['time_ms'],data_tid['core'],'Time(ms)','Core ID',ax=ax)#,color=tid_cols[i])
         ax = generate_scatter(data_tid['time_ms'],data_tid['core'],'Time(ms)','Core ID',ax=ax,marker='o')#,color=func_cols) # COLOR by function
     if ax is not None:
         ax.legend(tids)
-        ax.set_title("thread occupancy across execution")
+        ax.set_title("thread occupancy across execution".title())
     plt.show()
 
+if __name__ == "__main__":
+    demo()
 
 # Fill Header
 #coreID = True

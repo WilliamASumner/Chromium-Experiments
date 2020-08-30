@@ -14,6 +14,7 @@ import shlex              # shell arg parsing
 
 from src.python.convenience import * # convenience functions
 import src.python.ipc as ipc         # IPC interface
+import src.python.plotting.occupancy as graph
 
 # Experiment Setup
 expInt = ipc.ExperimentInterface()
@@ -324,5 +325,6 @@ if not args.no_logs:
 # Example graph generation
 if args.plot_graphs and not args.no_logs:
     printv("Running occupancy.py on experiment",args.verbose)
+    os.environ['DISPLAY'] = ":0"
     os.environ['DATA_FILES'] = f"{expDirName}/data*.log"
-    subprocess.run(['./src/python/plotting/occupancy.py'])
+    graph.demo()
