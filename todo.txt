@@ -9,12 +9,20 @@ High Priority
 Med. Priority
 -------------
 - (occupany.py + processing.py) update for multiple iteration data (right now timestamps are not synced to iterations)
-- (all files) Time the framework against -lNone to see if there's any noticable affect on page load time
+- (all files) Time the framework against -lNone to see if there's any noticable affect on page load time (i.e. quantify overhead of the framework)
 
 -------------
 Low  Priority
 -------------
 - (chrome-experimenter.py) add flag for headless rather than Xvfb (also compare the results)
-- (experiment.cc + chrome-experimenter.py) figure out why chrome crashes on twitter...
+- (chrome-experimenter.py) test if --disable-cache actually changes results
 - (chrome-experimenter.py) find a better (shorter) name
+- (experiment.cc + chrome-experimenter.py) figure out why chrome crashes on twitter...
 - (run-chrome.sh) - output to exp dir inside logs/ instead of directly to logs/
+- (wget-script.sh) - finish so we can have a static set of websites to test against (this may be impossible...)
+
+-------------
+  Misc Ideas
+-------------
+- Use ChromeDevTools to simulate scroll/click events
+- Use ChromeDevTools to simulate various network conditions
