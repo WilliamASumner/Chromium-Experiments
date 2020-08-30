@@ -19,8 +19,8 @@ import ipc                # IPC interface
 expInt = ipc.ExperimentInterface()
 
 # Create function sets
-bigToAll = ipc.FunctionSet((2,2),(1,1),ipc.layout + ipc.paint + ipc.js)
-littleToAll = ipc.FunctionSet((0,4),(1,1),ipc.css + ipc.html)
+bigToAll = ipc.FunctionSet((0,4),(4,4),ipc.layout + ipc.paint + ipc.js)
+littleToAll = ipc.FunctionSet((4,0),(4,4),ipc.css + ipc.html)
 
 # Add sets to experiment and init
 expInt.addSet(bigToAll)
