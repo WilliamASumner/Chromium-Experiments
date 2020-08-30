@@ -47,6 +47,9 @@ This will run `permutate.sh` with some default arguments. To run with custom set
 ### Changing log output
 Use: `make run PERM_PREFIX=YOUR_PREFIX` to change the prefix for the log files
 
+## Data Analysis
+`processing.py` will generate a nice numpy array which you can use to analyze the data however you see fit, `occupancy.py` is a simple example of using matplotlib with the numpy array and `summarize.sh` generates a `summary.log` file which contains various summary statistics.
+
 ## Terminology
 * *experiment* - a single invocation of a script to produce data from 1+ page loads in Chromium
 * *affinity* - the set of cores that a process can be scheduled on
