@@ -38,11 +38,11 @@ To run an experiment, it's as easy as:
 ```
 make run-pychrome
 ```
-This will run `chrome-experimenter.py` with some default options. The preferred (and most flexible) way to run experiments is with `./chrome-experimenter.py [OPTIONS]`. See `./chrome-experimenter.py -h` for help.
+This will run `chrome-experimenter.py` with some default options. The preferred (and most flexible) way to run experiments is with `./chrome-experimenter.py [OPTIONS]`. See `./chrome-experimenter.py -h` for help. Alternatively, you can use:
 ```
 make run-sh
 ```
-This will run `permutate.sh` with some default arguments. To run with custom settings, see `Makefile` for usage or the ["more help"](#More-help) section. 
+This will run `permutate.sh` with some default arguments. To run with custom settings, see `Makefile` for usage or the ["more help"](#More-help) section.
 
 ### Changing log output
 Use: `make run PERM_PREFIX=YOUR_PREFIX` to change the prefix for the log files
