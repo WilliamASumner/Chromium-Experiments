@@ -266,7 +266,7 @@ with open(mFilename, "r+b")  as mfile, \
             chrome.wait_event("Page.loadEventFired",timeout=args.timeout)
 
             # Data is in the format [navigationStart timestamp, duration in ms]
-            result = [None,None]
+            result = [None,None,page]
             try:
                 result[0] = chrome.Runtime.evaluate(expression="performance.timing.navigationStart")['result']['result']['value'] # there's probably a more pythonic way to do this...
                 result[1] = chrome.Runtime.evaluate(expression="performance.getEntriesByType('navigation')[0].duration")['result']['result']['value']
@@ -314,8 +314,11 @@ with open(mFilename, "r+b")  as mfile, \
 
 # Write out page load times csv-style
 with open(pageLoadLog,'w') as pageLoadsLog:
+    pageLoadsLog.write("Pageload ID, navigationStart Timestamp, Pageload Duration, Website\n") # Header
     for pageLoadId,pageLoadData in loadTimes.items():
-        pageLoadsLog.write(",".join([str(item) for item in pageLoadData]))
+        pageLoadsLog.write(str(pageLoadId) + ", ")
+        pageLoadsLog.write(", ".join([str(item) for item in pageLoadData]))
+        pageLoadsLog.write("\n")
 
 if not args.no_logs:
     printv("Running summarize.sh on experiment",args.verbose)
