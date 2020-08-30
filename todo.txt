@@ -3,6 +3,7 @@ High Priority
 -------------
 - (occupany.py + processing.py) get coz-like plots (big/little tradeoff) for each function
     - (occupany.py + processing.py + chrome-experimenter.py) divy up data according to timestamps (i.e. between pageloads)
+        - Look at data contained in pageloads.log, should help with that
 
 -------------
 Med. Priority
