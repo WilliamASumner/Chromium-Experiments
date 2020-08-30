@@ -289,9 +289,9 @@ namespace blink {
             exit(1);
         }
 
-        experiment_fentry("UpdateLifeCyclePhasesInternal");
+        experiment_fentry("UpdateLifecyclePhasesInternal");
         real_fcn(this,target_state);
-        experiment_fexit("UpdateLifeCyclePhasesInternal");
+        experiment_fexit("UpdateLifecyclePhasesInternal");
     }
 
     /* Layout Stage */

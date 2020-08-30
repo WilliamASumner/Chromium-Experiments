@@ -155,11 +155,11 @@ class ExperimentInterface:
     # Decorators for experiment customization
 
 # Phases and function names we're working with
-html   = ["PumpPendingSpeculations","PumpTokenizer"]
-css    = ["ParseSheet","UpdateStyleAndLayout"]
+html   = ["PumpPendingSpeculations","ResumeParsingAfterYield"]
+css    = ["ParseSheet","UpdateStyleAndLayoutTree"]
 layout = ["PerformLayout"]
 paint  = ["UpdateLifecyclePhasesInternal"]
-js     = ["EvaluateScriptInMainWorld","EvaluateScriptInIsolatedWorld","CallFunction"]
+js     = ["ExecuteScriptInMainWorld","ExecuteScriptInIsolatedWorld","CallFunction"]
 
 # Sample FunctionSets
 littleToAll = FunctionSet((4,0),(4,4),html + css + layout)
